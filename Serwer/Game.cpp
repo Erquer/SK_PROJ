@@ -89,3 +89,10 @@ bool Game::isGameOwnerSet() const {
     return this->getOwner() != nullptr;
 }
 
+void Game::setID(std::string id) {
+    for(int i = 0; i < 5; i ++){
+        this->id[i] = id[i];
+    }
+
+}
+

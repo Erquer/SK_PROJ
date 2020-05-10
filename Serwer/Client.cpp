@@ -51,8 +51,8 @@ void Client::handleEvent(uint32_t events) {
              * 3. Trzeba podać poprawny PIN do Gry, sprawdza serwer.
              * 4. Jeżeli gra jest tworzona, wysyła odpowiedni komunikat.
              */
-            //gra istnieje, lub jest tworzona.
-            if(Game::gameInstance){
+            //gra istnieje i nie jest tworzona( ktoś już ją stworzył)
+            if(Game::gameInstance && !Game::gameInstance->isOnCreation()){
 
 
             }
@@ -67,6 +67,31 @@ void Client::handleEvent(uint32_t events) {
 
 
         }else if(buffer[1] == 'n'){
+            std::string str(buffer);
+            std::string PIN = str.substr(3,strlen(buffer)-3);
+            gameMutex.lock();
+            if((!Game::gameInstance)){
+                //nikt nie tworzy gry.
+                GameOwner *gameOwner = new GameOwner(this);
+                Game *game = new Game();
+                game->setOwner(gameOwner);
+                game->setID(PIN);
+                char message[] = "accepted\n";
+                gameMutex.unlock();
+                writeData(this->fd,message);
+            }else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
+                //ktoś już tworzy grę
+
+                gameMutex.unlock();
+
+            }else if(Game::gameInstance && !Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
+                //gra istenieje i nie jest tworzona i czeka na rozpoczęcie.
+
+                gameMutex.unlock();
+            }else{
+                //gra jest stworzona i rozpoczęta.
+             gameMutex.unlock();
+            }
 
         }else{
             delete this;

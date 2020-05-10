@@ -27,6 +27,7 @@
  */
 
 extern std::mutex playerMutex;
+extern std::mutex gameMutex;
 extern std::mutex roundMutex;
 extern std::thread gameThread;
 

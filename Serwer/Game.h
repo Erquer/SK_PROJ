@@ -50,6 +50,8 @@ public:
     // ==== getters & setters ====
     const char *getId() const;
 
+    void setID(std::string id);
+
     const std::string &getName() const;
 
     void setName(const std::string &name);

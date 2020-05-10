@@ -8,6 +8,7 @@
 #include "utils.h"
 
 std::mutex playerMutex;
+std::mutex gameMutex;
 std::mutex roundMutex;
 std::thread gameThread;
 
