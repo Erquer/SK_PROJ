@@ -15,3 +15,7 @@ void GameOwner::getScoresAndNicks() {
 GameOwner::~GameOwner() {
 
 }
+
+GameOwner::GameOwner(Client *client) {
+
+}

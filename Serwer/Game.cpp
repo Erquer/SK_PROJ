@@ -60,10 +60,19 @@ void Game::setIsStarted(bool isStarted) {
 
 Game::Game(GameOwner *gameOwner) {
     std::cout << "New Game is Created by client with fd: "<< gameOwner->fd << std::endl;
-    gameInstance = this;
+    //gameInstance = this;
     this->setOwner(gameOwner);
     this->setIsStarted(false);
+    this->setOnCreation(true);
 
+}
+
+bool Game::isOnCreation() const {
+    return onCreation;
+}
+
+void Game::setOnCreation(bool onCreation) {
+    Game::onCreation = onCreation;
 }
 
 Game::~Game() {

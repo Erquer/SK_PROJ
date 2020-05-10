@@ -24,6 +24,7 @@ private:
 private:
     GameOwner *owner;
     bool isStarted;
+    bool onCreation;
 
     void resetPoints(bool reset = false);
 
@@ -72,6 +73,10 @@ public:
     bool isStarted1() const;
 
     void setIsStarted(bool isStarted);
+
+    bool isOnCreation() const;
+
+    void setOnCreation(bool onCreation);
 };
 
 

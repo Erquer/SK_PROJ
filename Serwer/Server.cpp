@@ -110,11 +110,12 @@ bool Server::deleteClientFromServer(Client *client) {
     }
     if(it != clientsConnected.end()){
         std::cout << "Found the Client and I am going to delete him. His fd is: "<< client->fd << std::endl;
-        int dist = std::distance(clientsConnected.begin(), it);
+        //int dist = std::distance(clientsConnected.begin(), it);
         clientsConnected.erase(it);
     }else{
         std::cout << " I couldnt find client " << std::endl;
     }
+    //wyświetlanie pozostałych połączonych klientów
     if(!clientsConnected.empty()) {
         for (auto client: clientsConnected) {
             std::cout << client->fd << " ; ";

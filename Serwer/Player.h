@@ -10,7 +10,7 @@
 #include "EpollContainer.h"
 #include "Client.h"
 
-class Player : public Client{
+class Player : public EpollContainer{
 private:
     std::string nick; //nick
     int points; // punkty gracza.

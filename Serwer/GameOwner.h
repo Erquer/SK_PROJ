@@ -12,9 +12,12 @@
  * Klasa użytkowika, który tworzy grę, nie ma pól, jedyne co robi, to wysyła na serwer pytania i odpowiedzi,
  * następnie może wysłać żądanie o informacji nt. graczy.
  */
-class GameOwner : public Client{
+class GameOwner : public EpollContainer{
 public:
     void getScoresAndNicks();
+
+
+    GameOwner(Client* client);
 
     void handleEvent(uint32_t events) override;
     ~GameOwner() override;

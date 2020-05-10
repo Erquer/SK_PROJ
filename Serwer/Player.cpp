@@ -24,7 +24,7 @@ void Player::handleEvent(uint32_t events) {
         //czytanie wiadomości -> sprawdzanie co chce zrobić -> odpowiednia reakcja.
         char buffer[BUFFER_SIZE];
         int bytes = readData(this->fd, buffer);
-        std::cout << buffer << std::endl;
+        std::cout << buffer << " Wysyłam potwierdzenie do klienta" <<std::endl;
         char confirmMessage[] = "Odebrano wiadomosc, jako gracz.\n";
         writeData(this->fd, confirmMessage);
     }
