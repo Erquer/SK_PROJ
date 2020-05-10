@@ -9,11 +9,24 @@
 #include <sys/epoll.h>
 #include <iostream>
 #include <cstring>
+#include <sstream>
 
 Client::Client(int fd) {
     this->fd = fd;
     epoll_event ee{EPOLLIN|EPOLLRDHUP, {.ptr=this}};
     epoll_ctl(Client::epollFd,EPOLL_CTL_ADD, fd, &ee);
+}
+
+std::vector<std::string> split (const std::string &s, char delim) {
+    std::vector<std::string> result;
+    std::stringstream ss (s);
+    std::string item;
+
+    while (getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+
+    return result;
 }
 
 
@@ -37,12 +50,18 @@ void Client::handleEvent(uint32_t events) {
         char buffer[BUFFER_SIZE];
         int bytes = readData(this->fd, buffer);
         std::cout << buffer << std::endl;
-        char confirmMessage[] = "Odebrano wiadomosc \n";
-        writeData(this->fd, confirmMessage);
+       char confirmMessage[] = "PIN";
+//        writeData(this->fd, confirmMessage);
 
         if(buffer[1] == 'j'){
             std::string str(buffer);
-            std::string nick = str.substr(3,strlen(buffer)-3);
+            std::string message = str.substr(3,strlen(buffer)-3);
+            std::cout << message << std::endl;
+
+
+            std::vector<std::string> niPin = split(message,';');
+            std::cout << "Odebrano: Nick: " << niPin.at(0) << " & PIN: " << niPin.at(1) << std::endl;
+
             /*
              * połączenie do gry:
              * zapewnione musi być:
@@ -52,15 +71,17 @@ void Client::handleEvent(uint32_t events) {
              * 4. Jeżeli gra jest tworzona, wysyła odpowiedni komunikat.
              */
             //gra istnieje i nie jest tworzona( ktoś już ją stworzył)
-            if(Game::gameInstance && !Game::gameInstance->isOnCreation()){
+//            if(Game::gameInstance && !Game::gameInstance->isOnCreation()){
+//
+//
+//            }
 
-
-            }
+            writeData(fd,confirmMessage);
             epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, nullptr);
-            Player *player = new Player(this,nick);
+            Player *player = new Player(this,niPin.at(0));
 
             //dodajemy nowego gracza do kolejki, a usuwamy klienta, bo nie jest już potrzebny.
-            std::cout<<"Dodano Gracza o nicku: " << nick << std::endl;
+            std::cout<<"Dodano Gracza o nicku: " << niPin.at(0) << " Jego FD = "<< player->fd<< std::endl;
 
             Server::addPlayer(player);
             deleteClient();
@@ -73,10 +94,9 @@ void Client::handleEvent(uint32_t events) {
             if((!Game::gameInstance)){
                 //nikt nie tworzy gry.
                 GameOwner *gameOwner = new GameOwner(this);
-                Game *game = new Game();
-                game->setOwner(gameOwner);
+                Game *game = new Game(gameOwner);
                 game->setID(PIN);
-                char message[] = "accepted\n";
+                char message[] = "accepted";
                 gameMutex.unlock();
                 writeData(this->fd,message);
             }else if(Game::gameInstance && Game::gameInstance->isOnCreation()){

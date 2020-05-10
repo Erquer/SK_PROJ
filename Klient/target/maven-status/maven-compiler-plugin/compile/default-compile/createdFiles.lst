@@ -1,4 +1,5 @@
 app/Launcher.class
+app/GameOwnerController.class
 app/Main.class
 app/MainSceneContoller$2.class
 app/Connection.class

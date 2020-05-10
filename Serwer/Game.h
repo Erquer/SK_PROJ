@@ -11,7 +11,6 @@
 
 class Game {
 private:
-    Game(GameOwner *gameOwner);
 
     char id[5];
     std::string name;
@@ -79,6 +78,8 @@ public:
     bool isOnCreation() const;
 
     void setOnCreation(bool onCreation);
+
+    Game(GameOwner *gameOwner);
 };
 
 

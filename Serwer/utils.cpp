@@ -27,12 +27,16 @@ int readData(int fd, char *buffer) {
 }
 
 void writeData(int fd, char *buffer){
-    int bytes = write(fd, buffer, strlen(buffer));
+
+    char message[strlen(buffer) + 1];
+    strcpy(message,buffer);
+    strcat(message,"\n");
+    int bytes = write(fd, message, strlen(message));
 
     if(bytes == -1){
         perror("Faled to send data to Client");
     }
-    if(bytes != strlen(buffer)){
+    if(bytes != strlen(message)){
            perror("Failed to sent whole message");
     }
 }

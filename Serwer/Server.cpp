@@ -56,8 +56,8 @@ void Server::closeServer() {
 
 void Server::addPlayer(Player *player) {
     playerMutex.lock();
-playerList.insert(std::pair<std::string ,Player*> (player->getNick(),player));
-playerMutex.unlock();
+    playerList.insert(std::pair<std::string ,Player*> (player->getNick(),player));
+    playerMutex.unlock();
 }
 
 void Server::deletePlayer(std::string nick) {
@@ -71,7 +71,7 @@ void Server::broadcast(char *buffer) {
 }
 
 bool Server::checkList(std::string nick) {
-    return false;
+    return playerList.find(nick) != playerList.end();
 }
 
 
