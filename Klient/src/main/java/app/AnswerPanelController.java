@@ -2,7 +2,7 @@ package app;
 
 import javafx.scene.layout.AnchorPane;
 
-public class AnswerPanelController {
+public class AnswerPanelController implements Runnable {
 
     public Connection getConnection() {
         return connection;
@@ -18,4 +18,9 @@ public class AnswerPanelController {
     //FXML Fields
 
     public AnchorPane rootPane;
+
+    @Override
+    public void run() {
+
+    }
 }

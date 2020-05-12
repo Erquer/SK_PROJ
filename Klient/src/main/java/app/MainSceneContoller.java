@@ -80,6 +80,7 @@ public class MainSceneContoller {
                                 controller.setConnection(connection);
                                 rootPane.getChildren().setAll(root);
                                 System.out.println("Accepted creation by message: " + confirm);
+                                new Thread(controller).start();
                                 break;
                             }
                         }
@@ -136,6 +137,7 @@ public class MainSceneContoller {
                                 AnswerPanelController controller = loader.getController();
                                 controller.setConnection(connection);
                                 rootPane.getChildren().setAll(root);
+                                new Thread(controller).start();
                             } else if (response.equals("PIN\n")) {
                                 //podano zły PIN do gry.
                                 TextInputDialog dialog = new TextInputDialog();
