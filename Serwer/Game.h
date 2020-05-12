@@ -32,7 +32,7 @@ public:
     // ==== konstruktor i destruktor ====
     Game();
 
-    virtual ~Game();
+    ~Game();
 
     static Game* gameInstance;
 
@@ -42,6 +42,8 @@ public:
     void runGame();
 
     static void addPlayersByTime();
+
+    void deleteGame();
 
 
 

@@ -1,8 +1,9 @@
+app/AnswerPanelController.class
 app/Launcher.class
+app/Connection.class
 app/GameOwnerController.class
 app/Main.class
 app/MainSceneContoller$2.class
-app/Connection.class
 app/MainSceneContoller$1.class
 app/Game.class
 app/Player.class

@@ -67,6 +67,13 @@ void Server::deletePlayer(std::string nick) {
 }
 
 void Server::broadcast(char *buffer) {
+    playerMutex.lock();
+    for(const auto &player: playerList){
+        writeData(player.second->fd, buffer);
+    }
+    //czekanie, dla pewności, że wszędzie doszły wiadomości.
+    sleep(1);
+    playerMutex.unlock();
 
 }
 
@@ -104,7 +111,7 @@ void Server::crServerSocket(int argc, char **argv) {
 
 bool Server::deleteClientFromServer(Client *client) {
     auto it = std::find(clientsConnected.begin(), clientsConnected.end(),client);
-    std::cout << "Before erasing: "<< std::endl;
+    //std::cout << "Before erasing: "<< std::endl;
     for(auto client: clientsConnected){
         std::cout << client->fd << " ; ";
     }
@@ -121,7 +128,7 @@ bool Server::deleteClientFromServer(Client *client) {
             std::cout << client->fd << " ; ";
         }
     }
-    std::cout << "Erased client";
+    //std::cout << "Erased client";
 
     return false;
 }

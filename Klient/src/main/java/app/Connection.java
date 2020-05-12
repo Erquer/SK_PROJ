@@ -24,6 +24,8 @@ public class Connection {
         var address = new InetSocketAddress(ip, port);
         this.socketChannel = SocketChannel.open(address);
         System.out.println("Connected to server with ip: " + this.ip + " on port: " + this.port);
+        String welcome = read();
+        System.out.println(welcome);
     }
     // ==== Public Methods ====
     public void sendMessage(String message) throws IOException {

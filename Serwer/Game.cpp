@@ -60,7 +60,7 @@ void Game::setIsStarted(bool isStarted) {
 
 Game::Game(GameOwner *gameOwner) {
     std::cout << "New Game is Created by client with fd: "<< gameOwner->fd << std::endl;
-    //gameInstance = this;
+    gameInstance = this;
     this->setOwner(gameOwner);
     this->setIsStarted(false);
     this->setOnCreation(true);
@@ -76,8 +76,11 @@ void Game::setOnCreation(bool onCreation) {
 }
 
 Game::~Game() {
+    gameInstance = nullptr;
+    printf("Game Destrucion \n");
 
 }
+
 
 void Game::resetPoints(bool reset) {
 
@@ -94,5 +97,9 @@ void Game::setID(std::string id) {
         this->id[i] = id[i];
     }
 
+}
+
+void Game::deleteGame() {
+    delete this;
 }
 

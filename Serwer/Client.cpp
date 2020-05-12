@@ -49,7 +49,7 @@ void Client::handleEvent(uint32_t events) {
         //czytanie wiadomości -> sprawdzanie co chce zrobić -> odpowiednia reakcja.
         char buffer[BUFFER_SIZE];
         int bytes = readData(this->fd, buffer);
-        std::cout << buffer << std::endl;
+        //std::cout << buffer << std::endl;
        char confirmMessage[] = "PIN";
 //        writeData(this->fd, confirmMessage);
 
@@ -75,16 +75,64 @@ void Client::handleEvent(uint32_t events) {
 //
 //
 //            }
+           // writeData(fd,confirmMessage);
+            if(!Game::gameInstance){
+                //nie ma gry, wyslanie tylko powiadomienia.
+                std::cout << "Player wants to join to not existing game" << std::endl;
+                char res[] = "nogame";
+                writeData(this->fd,res);
+            }
+            else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
+                //gra jest tworzona, wysłanie odp. powiadomienia.
+                std::cout<<"Player wants to join game in creation" << std::endl;
+                gameMutex.lock();
+                char res[] = "creating";
+                writeData(this->fd,res);
+                gameMutex.unlock();
 
-            writeData(fd,confirmMessage);
-            epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, nullptr);
-            Player *player = new Player(this,niPin.at(0));
+            }else if(!Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
+                //gra czeka na graczy
 
-            //dodajemy nowego gracza do kolejki, a usuwamy klienta, bo nie jest już potrzebny.
-            std::cout<<"Dodano Gracza o nicku: " << niPin.at(0) << " Jego FD = "<< player->fd<< std::endl;
+                gameMutex.lock();
+                printf("%s %s", niPin.at(1).c_str(),Game::gameInstance->getId());
+                if(niPin.at(1).compare(std::string(Game::gameInstance->getId())) == 0){
+                    //pin jest zgodny.
+                    std::cout << "New Player is joinning" << std::endl;
+                    playerMutex.lock();
+                    if(!Server::checkList(niPin.at(0))) {
+                        //nick się zgadza
 
-            Server::addPlayer(player);
-            deleteClient();
+                        epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, nullptr);
+                        Player *player = new Player(this, niPin.at(0));
+
+                        //dodajemy nowego gracza do kolejki, a usuwamy klienta, bo nie jest już potrzebny.
+                        std::cout << "Dodano Gracza o nicku: " << niPin.at(0) << " Jego FD = " << player->fd
+                                  << std::endl;
+
+                        Server::addPlayer(player);
+                        char res[]= "accepted";
+                        writeData(this->fd,res);
+                        deleteClient();
+                    }else{
+                        std::cout << "Player sent nick which already exists" << std::endl;
+                        //nick się nie zgadza
+                        char res[]= "nick";
+                        writeData(this->fd,res);
+
+                    }
+                    playerMutex.unlock();
+                    gameMutex.unlock();
+                }else{
+                    //pin się nie zgadza.
+                    std::cout<<"Player sent wrong PIN to game" << std::endl;
+                    writeData(this->fd,confirmMessage);
+                    gameMutex.unlock();
+                }
+
+            }else if(Game::gameInstance->isStarted1()){
+                //gra już trwa.
+            }
+
 
 
         }else if(buffer[1] == 'n'){
@@ -93,23 +141,32 @@ void Client::handleEvent(uint32_t events) {
             gameMutex.lock();
             if((!Game::gameInstance)){
                 //nikt nie tworzy gry.
+                std::cout<< " Udzielam dostępu" << std::endl;
+                epoll_ctl(epollFd,EPOLL_CTL_DEL,fd, nullptr);
                 GameOwner *gameOwner = new GameOwner(this);
                 Game *game = new Game(gameOwner);
                 game->setID(PIN);
+                Game::gameInstance->setOnCreation(false);
                 char message[] = "accepted";
                 gameMutex.unlock();
                 writeData(this->fd,message);
+                deleteClient();
             }else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
                 //ktoś już tworzy grę
+                std::cout << "Nie udzielam dostepu, bo ktos juz tworzy gre" << std::endl;
+                char message[] = "creating";
+                writeData(this->fd,message);
 
                 gameMutex.unlock();
 
             }else if(Game::gameInstance && !Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
                 //gra istenieje i nie jest tworzona i czeka na rozpoczęcie.
+                std::cout << "Gra oczekuje na graczy"<< std::endl;
 
                 gameMutex.unlock();
             }else{
                 //gra jest stworzona i rozpoczęta.
+                std::cout << "Gra trwa " << std::endl;
              gameMutex.unlock();
             }
 

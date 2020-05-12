@@ -16,12 +16,12 @@ int readData(int fd, char *buffer) {
     char tempBuffer[BUFFER_SIZE];
     int bytes = read(fd, tempBuffer, sizeof(tempBuffer));
     if(bytes == -1 ) perror("Blad czytania deskryptora");
-    std::cout << "Przeczytano: " << bytes <<" bitow" << std::endl;
+    //std::cout << "Przeczytano: " << bytes <<" bitow" << std::endl;
     std::string str(tempBuffer);
    // std::replace(str.begin(),str.end(), ' ', '+');
    // std::cout << str << std::endl;
     std::string recived = str.substr(0,bytes);
-    std::cout << "Recived: " << recived << std::endl;
+    //std::cout << "Recived: " << recived << std::endl;
     strcpy(buffer,recived.c_str());
     return bytes;
 }
