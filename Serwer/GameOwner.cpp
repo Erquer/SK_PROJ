@@ -20,7 +20,7 @@ void GameOwner::handleEvent(uint32_t events) {
 
     }else if(events && EPOLLIN){
         char buffer[BUFFER_SIZE];
-        int bytes = readData(this->fd, buffer);
+        readData(this->fd, buffer);
         //std::cout <<"Game Owner odebral: " <<buffer << std::endl;
         std::string str(buffer);
         std::string header = str.substr(0,3);
@@ -33,6 +33,7 @@ void GameOwner::handleEvent(uint32_t events) {
             writeData(this->fd,confirm);
         }else if(header.compare("Gq+") == 0){
             //przesłanie nowego pytania na serwer.
+            std::cout<<"Odbieram pytanie od GameOwnera" << std::endl;
             std::vector<std::string> newQuestion = split(message,';');
             //pytanie -> odp a -> odp b -> odp c -> odp d -> poprawna odpowiedz.
             char confirm[] = "otrzymano pytanie";
@@ -45,10 +46,40 @@ void GameOwner::handleEvent(uint32_t events) {
             strcpy(correct,newQuestion.at(5).c_str());
 
             auto *question = new Question(newQuestion.at(0),ans,correct[0]);
-            Game::gameInstance->addQuestion(reinterpret_cast<Question &>(question));
+            Game::gameInstance->addQuestion(*question);
             std::cout << "Odebrano pytanie: " << question->question <<" "<< question->correctAnswer <<" "<< question->answers.at(0)
                                                 << " "<<question->answers.at(1)<<" "<<question->answers.at(2)<<" "<< question->answers.at(3)<< std::endl;
             writeData(this->fd,confirm);
+        }else if(header.compare("Gp+") == 0){
+            //Game Owner prosi o listę graczy połączonych do gry.
+            std::cout << "GameOwner prosi o liste graczy" << std::endl;
+            playerMutex.lock();
+            if(Server::getPlayerList().empty()){
+                //pusta lista, wysyłamy odpowiednie powiadomienie.
+                char res[] = "empty";
+                writeData(this->fd,res);
+                playerMutex.unlock();
+                std::cout<<"Wysłano empty \n";
+
+            }else{
+                //wysyłamy listę graczy.
+                std::string players = "";
+                std::cout << "Wchodze do petli \n" ;
+                for(const auto &player : Server::getPlayerList()){
+                    Player *player1 = player.second;
+                    players.append(';'+player1->getNick() + "," + std::to_string(player1->getPoints()) );
+                }
+                players.replace(0,1,"");
+                std::cout<<"Player String:"<< players<< std::endl;
+                players = "players:" + players;
+                char sendPlayers[players.size()+1];
+                strcpy(sendPlayers,players.c_str());
+                sendPlayers[players.size()] = '\0';
+
+                writeData(this->fd,sendPlayers);
+                playerMutex.unlock();
+            }
+
         }
 
     }

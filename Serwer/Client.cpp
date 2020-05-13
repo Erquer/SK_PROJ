@@ -38,7 +38,7 @@ void Client::handleEvent(uint32_t events) {
         //kolejność..
         //czytanie wiadomości -> sprawdzanie co chce zrobić -> odpowiednia reakcja.
         char buffer[BUFFER_SIZE];
-        int bytes = readData(this->fd, buffer);
+        readData(this->fd, buffer);
         //std::cout << buffer << std::endl;
        char confirmMessage[] = "PIN";
 //        writeData(this->fd, confirmMessage);
@@ -84,14 +84,14 @@ void Client::handleEvent(uint32_t events) {
                 //gra czeka na graczy
 
                 gameMutex.lock();
-                printf("%s %s", niPin.at(1).c_str(),Game::gameInstance->getId());
+                printf("%s %s \n", niPin.at(1).c_str(),Game::gameInstance->getId());
+                playerMutex.lock();
                 if(niPin.at(1).compare(std::string(Game::gameInstance->getId())) == 0){
                     //pin jest zgodny.
                     std::cout << "New Player is joinning" << std::endl;
-                    playerMutex.lock();
                     if(!Server::checkList(niPin.at(0))) {
                         //nick się zgadza
-
+                        std::cout << "New Player Joined the Game" << std::endl;
                         epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, nullptr);
                         Player *player = new Player(this, niPin.at(0));
 
@@ -100,17 +100,20 @@ void Client::handleEvent(uint32_t events) {
                                   << std::endl;
 
                         Server::addPlayer(player);
+
                         char res[]= "accepted";
                         writeData(this->fd,res);
                         deleteClient();
+                        playerMutex.unlock();
+                        std::cout << "Dodano gracza \n";
+
                     }else{
                         std::cout << "Player sent nick which already exists" << std::endl;
                         //nick się nie zgadza
                         char res[]= "nick";
                         writeData(this->fd,res);
-
+                        playerMutex.unlock();
                     }
-                    playerMutex.unlock();
                     gameMutex.unlock();
                 }else{
                     //pin się nie zgadza.
@@ -137,7 +140,7 @@ void Client::handleEvent(uint32_t events) {
                 Game *game = new Game(gameOwner);
                 game->setID(PIN);
                 //temp komenda do testowania dołączenia nowych graczy.
-//                Game::gameInstance->setOnCreation(false);
+                Game::gameInstance->setOnCreation(false);
                 char message[] = "accepted";
                 gameMutex.unlock();
                 writeData(this->fd,message);

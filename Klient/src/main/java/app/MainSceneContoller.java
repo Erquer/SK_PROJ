@@ -136,78 +136,82 @@ public class MainSceneContoller {
                                 AnchorPane root = loader.load();
                                 AnswerPanelController controller = loader.getController();
                                 controller.setConnection(connection);
+                                controller.setPlayer(new Player(nick, 0));
                                 rootPane.getChildren().setAll(root);
                                 new Thread(controller).start();
                             } else if (response.equals("PIN\n")) {
                                 //podano zły PIN do gry.
-                                TextInputDialog dialog = new TextInputDialog();
-                                dialog.setTitle("PIN");
-                                dialog.setHeaderText("Podaj poprawny PIN do gry:");
-                                dialog.getEditor().textProperty().addListener((ov,oldValue,newValue) -> {
-                                    String portNumber = dialog.getEditor().getText();
-
-                                    if(portNumber.length()>5){
-                                        String s= dialog.getEditor().getText().substring(0,5);
-                                        dialog.getEditor().setText(s);
-                                    }else{
-                                        if(!newValue.matches("[0-9]")){ //zapobieganie wprowadzania czegoś innego niż liczby
-                                            dialog.getEditor().setText(newValue.replaceAll("[^0-9]",""));
-                                        }
-                                    }
-                                });
-                                var odp = dialog.showAndWait();
-                                if(odp.isPresent() && !odp.get().isBlank()){
-                                    PIN = odp.get();
-                                    connString = header + nick + ";" + PIN;
-                                    connection.sendMessage(connString);
-                                }else if(odp.get().isBlank()){
-                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                                    alert.setTitle("PIN");
-                                    alert.setHeaderText("PUSTY PIN");
-                                }
-                            } else if(response.equals("creating\n")){
+                                Alert alert = new Alert(Alert.AlertType.WARNING);
+                                alert.setTitle("PIN");
+                                alert.setHeaderText("Podano Zły Pin");
+//                                TextInputDialog dialog = new TextInputDialog();
+//                                dialog.setTitle("PIN");
+//                                dialog.setHeaderText("Podaj poprawny PIN do gry:");
+//                                dialog.getEditor().textProperty().addListener((ov, oldValue, newValue) -> {
+//                                    String portNumber = dialog.getEditor().getText();
+//
+//                                    if (portNumber.length() > 5) {
+//                                        String s = dialog.getEditor().getText().substring(0, 5);
+//                                        dialog.getEditor().setText(s);
+//                                    } else {
+//                                        if (!newValue.matches("[0-9]")) { //zapobieganie wprowadzania czegoś innego niż liczby
+//                                            dialog.getEditor().setText(newValue.replaceAll("[^0-9]", ""));
+//                                        }
+//                                    }
+//                                });
+//                                var odp = dialog.showAndWait();
+//                                if (odp.isPresent() && !odp.get().isBlank()) {
+//                                    PIN = odp.get();
+//                                    connString = header + nick + ";" + PIN;
+//                                    connection.sendMessage(connString);
+//                                } else if (odp.get().isBlank()) {
+//                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+//                                    alert.setTitle("PIN");
+//                                    alert.setHeaderText("PUSTY PIN");
+//                                }
+                            } else if (response.equals("creating\n")) {
                                 //gra aktualnie jest tworzona
                                 Alert alert = new Alert(Alert.AlertType.WARNING);
                                 alert.setTitle("Tworzenie");
                                 alert.setHeaderText("Gra aktualnie jest tworzona");
                                 alert.showAndWait();
-                            } else if(response.equals("nogame\n")){
+                            } else if (response.equals("nogame\n")) {
                                 //nie ma dostępnej gry.
                                 Alert alert = new Alert(Alert.AlertType.WARNING);
                                 alert.setTitle("Brak Gry");
                                 alert.setHeaderText("Brak dostępnej gry");
                                 alert.setContentText("Możesz stworzyć swoją");
                                 alert.showAndWait();
-                            }else if(response.equals("started\n")){
+                            } else if (response.equals("started\n")) {
                                 //gra się toczy.
                                 Alert alert = new Alert(Alert.AlertType.WARNING);
                                 alert.setTitle("Game");
                                 alert.setHeaderText("Gra aktualnie trwa");
                                 alert.setContentText("Nie można dołączyć do trwającej gry");
                                 alert.showAndWait();
-                            }else if(response.equals("nick\n")){
+                            } else if (response.equals("nick\n")) {
                                 //podano zły nick.
                                 TextInputDialog dialog = new TextInputDialog();
                                 dialog.setTitle("Nowy nick");
                                 dialog.setHeaderText("Podaj nowy nick");
-                                dialog.getEditor().textProperty().addListener((ov,odlValue,newValue)->{
+                                dialog.getEditor().textProperty().addListener((ov, odlValue, newValue) -> {
                                     String nicks = dialog.getEditor().getText();
 
-                                    if(nicks.length() > 14){
-                                        String n = dialog.getEditor().getText().substring(0,14);
+                                    if (nicks.length() > 14) {
+                                        String n = dialog.getEditor().getText().substring(0, 14);
                                         dialog.getEditor().setText(n);
-                                    }else{
-                                        if(!newValue.matches("[a-zA-Z0-9]")){ // zabokowanie znaków niechcianych
+                                    } else {
+                                        if (!newValue.matches("[a-zA-Z0-9]")) { // zabokowanie znaków niechcianych
                                             dialog.getEditor().setText(newValue.replaceAll("[^a-zA-Z0-9]", ""));
                                         }
                                     }
                                 });
                                 var odp = dialog.showAndWait();
-                                if(odp.isPresent() && !odp.get().isBlank()){
+                                if (odp.isPresent() && !odp.get().isBlank()) {
                                     nick = odp.get();
                                     connString = header + nick + ";" + PIN;
                                     connection.sendMessage(connString);
-                                }else if(odp.get().isBlank()){
+                                } else if (odp.get().isBlank()) {
                                     Alert alert = new Alert(Alert.AlertType.ERROR);
                                     alert.setTitle("Nick");
                                     alert.setHeaderText("PUSTY NICK");

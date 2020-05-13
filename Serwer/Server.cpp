@@ -12,6 +12,7 @@
 
 std::map<std::string, Player* > Server::playerList;
 std::vector<Client*> Server::clientsConnected;
+
 const std::map<std::string, Player *> &Server::getPlayerList() {
     return playerList;
 }
@@ -55,9 +56,8 @@ void Server::closeServer() {
 
 
 void Server::addPlayer(Player *player) {
-    playerMutex.lock();
+   //mutex w Client.cpp
     playerList.insert(std::pair<std::string ,Player*> (player->getNick(),player));
-    playerMutex.unlock();
 }
 
 void Server::deletePlayer(std::string nick) {

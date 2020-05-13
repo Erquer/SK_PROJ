@@ -23,7 +23,7 @@ void Player::handleEvent(uint32_t events) {
         //kolejność..
         //czytanie wiadomości -> sprawdzanie co chce zrobić -> odpowiednia reakcja.
         char buffer[BUFFER_SIZE];
-        int bytes = readData(this->fd, buffer);
+        readData(this->fd, buffer);
         std::cout << buffer << " Wysyłam potwierdzenie do klienta" <<std::endl;
         char confirmMessage[] = "Odebrano wiadomosc, jako gracz.\n";
         writeData(this->fd, confirmMessage);
@@ -44,7 +44,7 @@ Player::Player(int pFd, std::string nick) {
     //stworzenie eventu
     epoll_event ee{EPOLLIN|EPOLLRDHUP, {.ptr=this}};
     //dodanie do epolla, nowego wydarzenia związanego z tym graczem.
-    epoll_ctl(Player::epollFd, EPOLL_CTL_MOD, pFd, &ee);
+    epoll_ctl(Player::epollFd, EPOLL_CTL_ADD, pFd, &ee);
 
 }
 

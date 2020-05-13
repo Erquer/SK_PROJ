@@ -1,5 +1,6 @@
 package app;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -20,7 +21,7 @@ import java.io.IOException;
 public class GameOwnerController implements Runnable {
     // ==== Private Fields ====
     private Connection connection;
-    private final GameOwner gameOwner = new GameOwner();
+    private final GameOwner gameOwner = new GameOwner(this);
 
     // ==== FXML Fields ====
     @FXML
@@ -35,6 +36,7 @@ public class GameOwnerController implements Runnable {
     public ListView<Question> questionList;
 
     private ObservableList<Question> questions = FXCollections.observableArrayList();
+    private ObservableList<Player> players = FXCollections.observableArrayList();
 
     @FXML
     void initialize(){
@@ -62,6 +64,19 @@ public class GameOwnerController implements Runnable {
                             e.printStackTrace();
                         }
 
+                    }
+                }
+            }
+        });
+        players.addListener(new ListChangeListener<Player>() {
+            @Override
+            public void onChanged(Change<? extends Player> c) {
+                if(c.next()){
+                    if(c.wasAdded()){
+                        if(!playerList.getItems().isEmpty()){
+                            playerList.getItems().remove(0,playerList.getItems().size());
+                        }
+                        playerList.getItems().addAll(c.getList());
                     }
                 }
             }
@@ -96,6 +111,21 @@ public class GameOwnerController implements Runnable {
         stage.setScene(scene);
         stage.showAndWait();
     }
+    @FXML
+    public void getPlayers(MouseEvent event){
+        try {
+            connection.sendMessage("Gp+");
+        }catch (IOException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Connection");
+            alert.setHeaderText("Utracono połączenie");
+            alert.setContentText("Aplikacja zostanie zamknięta");
+            alert.showAndWait();
+            System.exit(0);
+        }
+
+
+    }
 
     // ==== Getters & Setters ====
     public Connection getConnection() {
@@ -104,6 +134,12 @@ public class GameOwnerController implements Runnable {
 
     public void setConnection(Connection connection) {
         this.connection = connection;
+    }
+    void fillPlayerList(ObservableList<Player> list){
+        if(!players.isEmpty()){
+            players.remove(0,players.size());
+        }
+        players.addAll(list);
     }
 
     @Override
@@ -117,18 +153,25 @@ public class GameOwnerController implements Runnable {
 
             }
         }catch (IOException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection");
-            alert.setHeaderText("Utracono połączenie");
-            alert.setContentText("Nastąpi próba połączenia, jeżeli się nie powiedzie, aplikacja zostanie zamknięta");
-            alert.showAndWait();
-            try {
-                connection = new Connection(connection.getIp(),connection.getPort());
-            } catch (IOException ioException) {
-                System.exit(0);
-            }
-            e.printStackTrace();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Connection");
+                    alert.setHeaderText("Utracono połączenie");
+                    alert.showAndWait();
+                }
+            });
+
         }
 
+    }
+
+    public ObservableList<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ObservableList<Player> players) {
+        this.players = players;
     }
 }

@@ -3,9 +3,13 @@ app/Launcher.class
 app/Question.class
 app/GameOwner.class
 app/GameOwnerController$1.class
+app/GameOwnerController$3.class
 app/Connection.class
+app/GameOwner$2.class
+app/GameOwnerController$2.class
 app/GameOwnerController.class
 app/Main.class
+app/GameOwner$1.class
 app/MainSceneContoller$2.class
 app/MainSceneContoller$1.class
 app/Game.class
