@@ -7,6 +7,9 @@
 #include "Server.h"
 #include "utils.h"
 #include <sys/epoll.h>
+#include <iostream>
+#include <cstring>
+#include <sstream>
 
 void GameOwner::handleEvent(uint32_t events) {
     if(events & ~EPOLLIN){
@@ -18,14 +21,33 @@ void GameOwner::handleEvent(uint32_t events) {
     }else if(events && EPOLLIN){
         char buffer[BUFFER_SIZE];
         int bytes = readData(this->fd, buffer);
-        std::cout <<"Game Owner odebral: " <<buffer << std::endl;
+        //std::cout <<"Game Owner odebral: " <<buffer << std::endl;
         std::string str(buffer);
-        if(str.compare("dzialam\n")){
+        std::string header = str.substr(0,3);
+        std::cout << header << std::endl;
+        std::string message = str.substr(3, strlen(buffer) - 3);
+        std::cout << message << std::endl;
+        if(header.compare("dzialam\n") == 0){
             std::cout<< "GameOwner Działa z PID: " << this->fd << std::endl;
             char confirm[] ="Potwierdzam dzialanie GameOwnera";
             writeData(this->fd,confirm);
-        }else{
-            char confirm[] ="NIE Potwierdzam dzialania GameOwnera";
+        }else if(header.compare("Gq+") == 0){
+            //przesłanie nowego pytania na serwer.
+            std::vector<std::string> newQuestion = split(message,';');
+            //pytanie -> odp a -> odp b -> odp c -> odp d -> poprawna odpowiedz.
+            char confirm[] = "otrzymano pytanie";
+            std::vector<std::string> ans;
+            ans.push_back(newQuestion.at(1));
+            ans.push_back(newQuestion.at(2));
+            ans.push_back(newQuestion.at(3));
+            ans.push_back(newQuestion.at(4));
+            char correct[newQuestion.at(5).size()];
+            strcpy(correct,newQuestion.at(5).c_str());
+
+            auto *question = new Question(newQuestion.at(0),ans,correct[0]);
+            Game::gameInstance->addQuestion(reinterpret_cast<Question &>(question));
+            std::cout << "Odebrano pytanie: " << question->question <<" "<< question->correctAnswer <<" "<< question->answers.at(0)
+                                                << " "<<question->answers.at(1)<<" "<<question->answers.at(2)<<" "<< question->answers.at(3)<< std::endl;
             writeData(this->fd,confirm);
         }
 

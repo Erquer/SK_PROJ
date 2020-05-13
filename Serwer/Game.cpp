@@ -103,3 +103,7 @@ void Game::deleteGame() {
     delete this;
 }
 
+void Game::addQuestion(Question &question) {
+    this->questions.push_back(question);
+}
+

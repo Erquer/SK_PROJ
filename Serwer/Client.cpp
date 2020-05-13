@@ -17,17 +17,7 @@ Client::Client(int fd) {
     epoll_ctl(Client::epollFd,EPOLL_CTL_ADD, fd, &ee);
 }
 
-std::vector<std::string> split (const std::string &s, char delim) {
-    std::vector<std::string> result;
-    std::stringstream ss (s);
-    std::string item;
 
-    while (getline (ss, item, delim)) {
-        result.push_back (item);
-    }
-
-    return result;
-}
 
 
 /*
@@ -146,7 +136,8 @@ void Client::handleEvent(uint32_t events) {
                 GameOwner *gameOwner = new GameOwner(this);
                 Game *game = new Game(gameOwner);
                 game->setID(PIN);
-                Game::gameInstance->setOnCreation(false);
+                //temp komenda do testowania dołączenia nowych graczy.
+//                Game::gameInstance->setOnCreation(false);
                 char message[] = "accepted";
                 gameMutex.unlock();
                 writeData(this->fd,message);

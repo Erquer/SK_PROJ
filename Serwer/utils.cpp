@@ -5,6 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 #include "utils.h"
 
 std::mutex playerMutex;
@@ -39,4 +40,15 @@ void writeData(int fd, char *buffer){
     if(bytes != strlen(message)){
            perror("Failed to sent whole message");
     }
+}
+std::vector<std::string> split (const std::string &s, char delim) {
+    std::vector<std::string> result;
+    std::stringstream ss (s);
+    std::string item;
+
+    while (getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+
+    return result;
 }

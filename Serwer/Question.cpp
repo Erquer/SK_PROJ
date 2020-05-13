@@ -27,3 +27,6 @@ char Question::getCorrectAnswer() const {
 void Question::setCorrectAnswer(char correctAnswer) {
     Question::correctAnswer = correctAnswer;
 }
+
+Question::Question(const std::string &question, const std::vector<std::string> &answers, char correctAnswer) : question(
+        question), answers(answers), correctAnswer(correctAnswer) {}

@@ -33,4 +33,5 @@ extern std::thread gameThread;
 
 int readData(int fd, char *buffer);
 void writeData(int fd, char *buffer);
+std::vector<std::string> split (const std::string &s, char delim);
 

@@ -45,7 +45,7 @@ public:
 
     void deleteGame();
 
-
+    void addQuestion(Question &question);
 
 
     // ==== getters & setters ====

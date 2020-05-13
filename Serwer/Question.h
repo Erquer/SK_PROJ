@@ -13,6 +13,8 @@ class Question {
 public:
     std::string question;
 
+    Question(const std::string &question, const std::vector<std::string> &answers, char correctAnswer);
+
     const std::string &getQuestion() const;
 
     void setQuestion(const std::string &question);
