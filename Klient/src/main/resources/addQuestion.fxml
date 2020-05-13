@@ -21,7 +21,7 @@
       <RadioButton fx:id="c" layoutX="394.0" layoutY="84.0" mnemonicParsing="false" text="B" />
       <RadioButton fx:id="d" layoutX="394.0" layoutY="51.0" mnemonicParsing="false" text="A" />
       <Label layoutX="394.0" layoutY="19.0" text="Zaznacz poprawną odpowiedź" />
-      <Button fx:id="addButton" layoutX="524.0" layoutY="360.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0" text="Add" />
+      <Button fx:id="addButton" onMouseClicked="#addQuestionClicker" layoutX="524.0" layoutY="360.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0" text="Add" />
       <Button fx:id="cancelButton" layoutX="14.0" layoutY="360.0" mnemonicParsing="false" text="Cancel" />
    </children>
 </AnchorPane>

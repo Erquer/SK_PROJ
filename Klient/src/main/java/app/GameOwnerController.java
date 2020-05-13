@@ -1,8 +1,8 @@
 package app;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -37,7 +38,34 @@ public class GameOwnerController implements Runnable {
 
     @FXML
     void initialize(){
+        questions.addListener(new ListChangeListener<Question>() {
+            @Override
+            public void onChanged(Change<? extends Question> c) {
+                if(c.next()){
+                    if(c.wasAdded()){
+                        if(!questionList.getItems().isEmpty())
+                            questionList.getItems().remove(0,questionList.getItems().size());
+                        questionList.getItems().addAll(c.getList());
 
+                        Question question = questions.get(questions.size()-1);
+                        gameOwner.getGame().addQuestion(question);
+                        String header = "Gq+";
+                        String sendQuestionString = header + question.getQuestion();
+                        for(String ans:question.getAnswers()){
+                            sendQuestionString += ';' + ans;
+                        }
+                        sendQuestionString += ';' + String.valueOf(question.getCorrectAnswer());
+                        System.out.println(sendQuestionString);
+                        try {
+                            connection.sendMessage(sendQuestionString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        });
     }
 
 
@@ -56,10 +84,10 @@ public class GameOwnerController implements Runnable {
     }
 
     @FXML
-    public void addQuestion(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("addQuestion.fxml"));
+    public void addQuestion(MouseEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("addQuestion.fxml"));
         Parent parent = fxmlLoader.load();
-        AddQuestionController dialogController = fxmlLoader.<AddQuestionController>getController();
+        AddQuestionController dialogController = fxmlLoader.getController();
         dialogController.setMainList(questions);
 
         Scene scene = new Scene(parent, 300, 200);
@@ -89,6 +117,16 @@ public class GameOwnerController implements Runnable {
 
             }
         }catch (IOException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Connection");
+            alert.setHeaderText("Utracono połączenie");
+            alert.setContentText("Nastąpi próba połączenia, jeżeli się nie powiedzie, aplikacja zostanie zamknięta");
+            alert.showAndWait();
+            try {
+                connection = new Connection(connection.getIp(),connection.getPort());
+            } catch (IOException ioException) {
+                System.exit(0);
+            }
             e.printStackTrace();
         }
 

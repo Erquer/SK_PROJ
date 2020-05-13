@@ -1,15 +1,15 @@
 package app;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+
 
 public class AddQuestionController {
 
@@ -41,7 +41,7 @@ public class AddQuestionController {
 
     ToggleGroup group = new ToggleGroup();
 
-    private ObservableList<Question> mainList;
+    private ObservableList<Question> mainList= FXCollections.observableArrayList();
 
     public void setMainList(ObservableList<Question> mainList) {
         this.mainList = mainList;
@@ -61,18 +61,22 @@ public class AddQuestionController {
         a.setSelected(true);
     }
     @FXML
-    public void addQuestionClicker(ActionEvent event){
+    public void addQuestionClicker(MouseEvent event){
         System.out.println("Adding new Question");
         if(!question.getText().isBlank() && !aAnswer.getText().isBlank() && !bAnswer.getText().isBlank() && !cAnswer.getText().isBlank() && !dAnswer.getText().isBlank()){
             //wszystkie są jakoś zapełnione, teoretycznie są poprawne.
-            String st = group.getSelectedToggle().getUserData().toString();
+            String st = ((RadioButton)group.getSelectedToggle()).getText();
             char ch = st.charAt(0);
-            int ans = ch - 97;
+            int ans = ch - 65;
             Question temp = new Question(question.getText(),aAnswer.getText(),bAnswer.getText(),cAnswer.getText(),dAnswer.getText(),ans);
             mainList.add(temp);
 
             closeStage(event);
 
+        }else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Puste Pole");
+            alert.setHeaderText("Żadne polenie może być puste, proszę uzupełnić brakujące.");
         }
 
     }
@@ -91,7 +95,7 @@ public class AddQuestionController {
             }
         });
     }
-    private void closeStage(ActionEvent event){
+    private void closeStage(MouseEvent event){
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
         stage.close();

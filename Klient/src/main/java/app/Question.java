@@ -41,4 +41,8 @@ public class Question {
         answers = FXCollections.observableArrayList();
     }
 
+    @Override
+    public String toString() {
+        return this.question + " " + correctAnswer;
+    }
 }

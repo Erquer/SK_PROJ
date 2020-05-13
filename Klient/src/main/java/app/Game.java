@@ -16,4 +16,24 @@ public class Game {
         this.questionList = new ArrayList<>();
         this.bestScores = FXCollections.observableArrayList();
     }
+
+    public void addQuestion(Question question){
+        questionList.add(question);
+    }
+
+    public List<Question> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<Question> questionList) {
+        this.questionList = questionList;
+    }
+
+    public ObservableList<String> getBestScores() {
+        return bestScores;
+    }
+
+    public void setBestScores(ObservableList<String> bestScores) {
+        this.bestScores = bestScores;
+    }
 }
