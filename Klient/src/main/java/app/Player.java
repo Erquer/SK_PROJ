@@ -1,5 +1,8 @@
 package app;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import java.util.List;
 
 /**
@@ -10,6 +13,7 @@ public class Player {
     private String nick;
     private int points;
     private List<Integer> yourAnswers;
+    private int actualRound;
 
     public Player(String nick, int points) {
         this.nick = nick;
@@ -17,8 +21,21 @@ public class Player {
     }
 
 
-    public void handleResponse(String response){
+    public void handleResponse(String response, AnswerPanelController controller){
         System.out.println(response);
+
+        if(response.equals("cancel\n")){
+            //tworzenie gry ktoś przerwał.
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Game");
+                    alert.setHeaderText("GameOwner opóścił tworzenie gry.");
+                    alert.showAndWait();
+                }
+            });
+        }
     }
 
     public String getNick() {

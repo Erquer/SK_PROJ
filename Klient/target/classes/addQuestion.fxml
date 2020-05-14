@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AddQuestionController">
+<AnchorPane prefHeight="228.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AddQuestionController">
    <children>
       <TextField fx:id="question" layoutX="215.0" layoutY="14.0" />
       <TextField fx:id="aAnswer" layoutX="215.0" layoutY="47.0" />
@@ -21,7 +20,7 @@
       <RadioButton fx:id="c" layoutX="394.0" layoutY="84.0" mnemonicParsing="false" text="B" />
       <RadioButton fx:id="d" layoutX="394.0" layoutY="51.0" mnemonicParsing="false" text="A" />
       <Label layoutX="394.0" layoutY="19.0" text="Zaznacz poprawną odpowiedź" />
-      <Button fx:id="addButton" onMouseClicked="#addQuestionClicker" layoutX="524.0" layoutY="360.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0" text="Add" />
-      <Button fx:id="cancelButton" layoutX="14.0" layoutY="360.0" mnemonicParsing="false" text="Cancel" />
+      <Button fx:id="addButton" layoutX="523.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#addQuestionClicker" prefHeight="26.0" prefWidth="63.0" text="Add" />
+      <Button fx:id="cancelButton" layoutX="23.0" layoutY="187.0" mnemonicParsing="false" text="Cancel" />
    </children>
 </AnchorPane>

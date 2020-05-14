@@ -61,9 +61,9 @@ void Server::addPlayer(Player *player) {
 }
 
 void Server::deletePlayer(std::string nick) {
-    playerMutex.lock();
+    //mutex poza funkcją
     playerList.erase(nick);
-    playerMutex.unlock();
+
 }
 
 void Server::broadcast(char *buffer) {

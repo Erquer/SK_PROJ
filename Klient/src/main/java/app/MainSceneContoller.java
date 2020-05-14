@@ -144,31 +144,6 @@ public class MainSceneContoller {
                                 Alert alert = new Alert(Alert.AlertType.WARNING);
                                 alert.setTitle("PIN");
                                 alert.setHeaderText("Podano Zły Pin");
-//                                TextInputDialog dialog = new TextInputDialog();
-//                                dialog.setTitle("PIN");
-//                                dialog.setHeaderText("Podaj poprawny PIN do gry:");
-//                                dialog.getEditor().textProperty().addListener((ov, oldValue, newValue) -> {
-//                                    String portNumber = dialog.getEditor().getText();
-//
-//                                    if (portNumber.length() > 5) {
-//                                        String s = dialog.getEditor().getText().substring(0, 5);
-//                                        dialog.getEditor().setText(s);
-//                                    } else {
-//                                        if (!newValue.matches("[0-9]")) { //zapobieganie wprowadzania czegoś innego niż liczby
-//                                            dialog.getEditor().setText(newValue.replaceAll("[^0-9]", ""));
-//                                        }
-//                                    }
-//                                });
-//                                var odp = dialog.showAndWait();
-//                                if (odp.isPresent() && !odp.get().isBlank()) {
-//                                    PIN = odp.get();
-//                                    connString = header + nick + ";" + PIN;
-//                                    connection.sendMessage(connString);
-//                                } else if (odp.get().isBlank()) {
-//                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-//                                    alert.setTitle("PIN");
-//                                    alert.setHeaderText("PUSTY PIN");
-//                                }
                             } else if (response.equals("creating\n")) {
                                 //gra aktualnie jest tworzona
                                 Alert alert = new Alert(Alert.AlertType.WARNING);

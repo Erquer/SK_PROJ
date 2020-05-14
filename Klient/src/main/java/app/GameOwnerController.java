@@ -104,8 +104,7 @@ public class GameOwnerController implements Runnable {
         Parent parent = fxmlLoader.load();
         AddQuestionController dialogController = fxmlLoader.getController();
         dialogController.setMainList(questions);
-
-        Scene scene = new Scene(parent, 300, 200);
+        Scene scene = new Scene(parent);
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);

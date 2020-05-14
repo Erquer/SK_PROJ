@@ -25,8 +25,13 @@ void Player::handleEvent(uint32_t events) {
         char buffer[BUFFER_SIZE];
         readData(this->fd, buffer);
         std::cout << buffer << " Wysyłam potwierdzenie do klienta" <<std::endl;
-        char confirmMessage[] = "Odebrano wiadomosc, jako gracz.\n";
-        writeData(this->fd, confirmMessage);
+        std::string str(buffer);
+        std::string header = str.substr(0,3);
+        std::string message = str.substr(3,str.size() - 3);
+        if(header.compare("Pa+") == 0){
+            //przesłanie odpowiedzi.
+        }
+
     }
 }
 

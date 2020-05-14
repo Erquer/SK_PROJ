@@ -3,9 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AnswerPanelController">
+<AnchorPane fx:id="rootPane" prefHeight="267.0" prefWidth="453.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AnswerPanelController">
    <children>
-      <Button fx:id="but" layoutX="269.0" layoutY="187.0" mnemonicParsing="false" text="Działam" />
+      <Button fx:id="but" layoutX="188.0" layoutY="21.0" mnemonicParsing="false" text="Działam" />
+      <Button fx:id="odpA" layoutX="56.0" layoutY="143.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
+      <Button fx:id="odpC" layoutX="56.0" layoutY="250.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
+      <Button fx:id="odpB" layoutX="256.0" layoutY="143.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
+      <Button fx:id="odpD" layoutX="256.0" layoutY="250.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
+      <Label fx:id="questionLabel" layoutX="56.0" layoutY="77.0" prefHeight="16.0" prefWidth="335.0" text="Pytanie pojawi się tutaj" textAlignment="CENTER" />
    </children>
 </AnchorPane>

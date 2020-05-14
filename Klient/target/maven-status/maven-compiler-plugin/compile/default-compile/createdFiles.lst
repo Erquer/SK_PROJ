@@ -2,6 +2,7 @@ app/AnswerPanelController.class
 app/Launcher.class
 app/Question.class
 app/GameOwner.class
+app/Player$1.class
 app/GameOwnerController$1.class
 app/GameOwnerController$3.class
 app/Connection.class
