@@ -6,12 +6,14 @@
 <AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.GameOwnerController">
    <children>
       <Button fx:id="startButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#onButtonClicked" prefHeight="26.0" prefWidth="106.0" text="Start" />
-      <Button fx:id="addQuestionButton" layoutX="14.0" layoutY="46.0" mnemonicParsing="false" text="Add Question" onMouseClicked="#addQuestion" />
-      <Button fx:id="getPlayersButton" layoutX="14.0" layoutY="79.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="Get Players" onMouseClicked="#getPlayers" />
-      <Button layoutX="14.0" layoutY="112.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="?" />
+      <Button fx:id="addQuestionButton" layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onMouseClicked="#addQuestion" text="Add Question" />
+      <Button fx:id="getPlayersButton" layoutX="14.0" layoutY="113.0" mnemonicParsing="false" onMouseClicked="#getPlayers" prefHeight="26.0" prefWidth="106.0" text="Get Players" />
+      <Button fx:id="readyButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="Ready" onMouseClicked="#onReadyButtonClicked" />
       <ListView fx:id="playerList" layoutX="386.0" layoutY="25.0" prefHeight="362.0" prefWidth="200.0" />
       <ListView fx:id="questionList" layoutX="159.0" layoutY="25.0" prefHeight="362.0" prefWidth="200.0" />
       <Label layoutX="386.0" layoutY="6.0" prefHeight="16.0" prefWidth="200.0" text="Lista Połączonych Graczy" textAlignment="CENTER" />
       <Label layoutX="159.0" layoutY="6.0" prefHeight="16.0" prefWidth="200.0" text="Lista Pytań" textAlignment="CENTER" />
+      <Label layoutX="14.0" layoutY="151.0" text="Game State:" />
+      <Label fx:id="stateLabel" layoutX="67.0" layoutY="174.0" />
    </children>
 </AnchorPane>

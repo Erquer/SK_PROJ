@@ -9,6 +9,7 @@
 #include "Serwer/Server.h"
 #include "Serwer/Game.h"
 
+
 Server *server;
 void ctrl_c(int);
 void handleEpollEvents(Server *server);
@@ -36,7 +37,6 @@ int main(int argc, char **argv) {
     handleEpollEvents(server);
 
     server->closeServer();
-    return 0;
 
     std::cout << "Hello, World!" << std::endl;
     return 0;

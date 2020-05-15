@@ -3,13 +3,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="rootPane" prefHeight="267.0" prefWidth="453.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AnswerPanelController">
+<AnchorPane fx:id="rootPane" prefHeight="389.0" prefWidth="697.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.AnswerPanelController">
    <children>
-      <Button fx:id="but" layoutX="188.0" layoutY="21.0" mnemonicParsing="false" text="Działam" />
-      <Button fx:id="odpA" layoutX="56.0" layoutY="143.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
-      <Button fx:id="odpC" layoutX="56.0" layoutY="250.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
-      <Button fx:id="odpB" layoutX="256.0" layoutY="143.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
-      <Button fx:id="odpD" layoutX="256.0" layoutY="250.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="134.0" text="Button" onMouseClicked="#odpButtonClicked"/>
+      <Button fx:id="but" layoutX="368.0" layoutY="21.0" mnemonicParsing="false" text="Działam" />
+      <Button fx:id="odpA" layoutX="56.0" layoutY="143.0" mnemonicParsing="false" onMouseClicked="#odpButtonClicked" prefHeight="71.0" prefWidth="134.0" text="Button" />
+      <Button fx:id="odpC" layoutX="56.0" layoutY="250.0" mnemonicParsing="false" onMouseClicked="#odpButtonClicked" prefHeight="71.0" prefWidth="134.0" text="Button" />
+      <Button fx:id="odpB" layoutX="256.0" layoutY="143.0" mnemonicParsing="false" onMouseClicked="#odpButtonClicked" prefHeight="71.0" prefWidth="134.0" text="Button" />
+      <Button fx:id="odpD" layoutX="256.0" layoutY="250.0" mnemonicParsing="false" onMouseClicked="#odpButtonClicked" prefHeight="71.0" prefWidth="134.0" text="Button" />
       <Label fx:id="questionLabel" layoutX="56.0" layoutY="77.0" prefHeight="16.0" prefWidth="335.0" text="Pytanie pojawi się tutaj" textAlignment="CENTER" />
+      <Label layoutX="38.0" layoutY="26.0" text="Nick:" />
+      <Label fx:id="nickLabel" layoutX="87.0" layoutY="26.0" text="Tutaj pojawi się twój nick" />
+      <Label layoutX="37.0" layoutY="47.0" text="Points:" />
+      <Label fx:id="pointLabel" layoutX="87.0" layoutY="47.0" />
+      <Label fx:id="roundLabel" layoutX="404.0" layoutY="55.0" />
+      <Label layoutX="350.0" layoutY="55.0" text="Runda:" />
+      <TableView fx:id="answersTable" layoutX="404.0" layoutY="79.0" prefHeight="293.0" prefWidth="274.0">
+        <columns>
+          <TableColumn fx:id="questionColumn" prefWidth="137.0" text="Pytanie" />
+          <TableColumn fx:id="answerColumn" prefWidth="136.0" text="Odpowiedź" />
+        </columns>
+      </TableView>
    </children>
 </AnchorPane>

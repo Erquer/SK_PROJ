@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -19,17 +20,23 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GameOwnerController implements Runnable {
+
+
     // ==== Private Fields ====
     private Connection connection;
     private final GameOwner gameOwner = new GameOwner(this);
 
     // ==== FXML Fields ====
     @FXML
+    public Label stateLabel;
+    @FXML
     public Button startButton;
     @FXML
     public Button getPlayersButton;
     @FXML
     public Button addQuestionButton;
+    @FXML
+    public Button readyButton;
     @FXML
     public ListView<Player> playerList;
     @FXML
@@ -81,20 +88,31 @@ public class GameOwnerController implements Runnable {
                 }
             }
         });
+        stateLabel.setText("Creation");
+        startButton.setDisable(true);
     }
 
 
-
+    @FXML
     public void onButtonClicked(Event event) {
         //System.out.println("dzialam");
         try {
-            connection.sendMessage("dzialam");
-
+            //wysłanie sygnału, że gra oczekuje na graczy i po ustalonym czasie się zacznie.
+            connection.sendMessage("Gs+start");
         } catch (IOException e) {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setTitle("CONNECTION");
             alert.setHeaderText("Connection problems");
             alert.showAndWait();
+        }
+    }
+    @FXML
+    public void onReadyButtonClicked(Event event){
+        //wysyła znak, że gra jest gotowa i może oczekiwać na graczy.
+        try {
+            connection.sendMessage("Gs+ready");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

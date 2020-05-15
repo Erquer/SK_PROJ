@@ -26,7 +26,14 @@ crServerSocket(argc,argv);
 }
 
 Server::~Server() {
-
+    pthread_cancel(gameThread.native_handle());
+    char exit[] = "lost";
+    broadcast(exit);
+    for(auto it: playerList){
+        delete it.second;
+    }
+    playerList.clear();
+    close(fd);
 }
 
 void Server::handleEvent(uint32_t event) {
@@ -51,7 +58,7 @@ void Server::handleEvent(uint32_t event) {
 }
 
 void Server::closeServer() {
-
+    delete this;
 }
 
 

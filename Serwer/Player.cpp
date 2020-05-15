@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "Server.h"
 #include "Player.h"
+#include "Game.h"
 #include "utils.h"
 
 
@@ -27,9 +28,24 @@ void Player::handleEvent(uint32_t events) {
         std::cout << buffer << " Wysyłam potwierdzenie do klienta" <<std::endl;
         std::string str(buffer);
         std::string header = str.substr(0,3);
-        std::string message = str.substr(3,str.size() - 3);
+        std::string message = str.substr(4,str.size() - 4);
+
         if(header.compare("Pa+") == 0){
             //przesłanie odpowiedzi.
+            roundMutex.lock();
+            int round = atoi(reinterpret_cast<const char *>(buffer[3]));
+            if(round == Game::gameInstance->getRound()){
+                //runda się zgadza
+                answers.push_back(message[message.length()-1]);
+                lastAnswer = message[message.length()-1];
+                Game::addPlayerByTime(this);
+            }else{
+
+            }
+
+
+
+            roundMutex.unlock();
         }
 
     }

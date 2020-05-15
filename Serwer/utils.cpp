@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <sstream>
 #include "utils.h"
+#include "Question.h"
 
 std::mutex playerMutex;
 std::mutex gameMutex;
@@ -51,4 +52,9 @@ std::vector<std::string> split (const std::string &s, char delim) {
     }
 
     return result;
+}
+
+std::string createQuestionString(Question *question){
+    return question->getQuestion() +';' + question->getCorrectAnswer() + ';' + question->getAnswers().at(0) +
+                    ';' + question->getAnswers().at(1) + ';' + question->getAnswers().at(2) + ';' +question->getAnswers().at(3);
 }

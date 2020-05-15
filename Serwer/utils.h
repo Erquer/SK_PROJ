@@ -10,12 +10,14 @@
 #include <vector>
 #include <mutex>
 #include <thread>
+#include "Question.h"
 
 
 #define BUFFER_SIZE 255
 #define FIRST_ANSWER_POINTS 4000
-#define DECREASED_POINTS 300
-#define DELIMITER ";"
+#define DECREASED_POINTS 400
+#define ROUND_TIME 20
+#define READY_TIME 10
 
 
 /**
@@ -34,4 +36,5 @@ extern std::thread gameThread;
 int readData(int fd, char *buffer);
 void writeData(int fd, char *buffer);
 std::vector<std::string> split (const std::string &s, char delim);
+std::string createQuestionString(Question *question);
 

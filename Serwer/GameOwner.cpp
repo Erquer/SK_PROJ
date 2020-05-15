@@ -27,10 +27,57 @@ void GameOwner::handleEvent(uint32_t events) {
         std::cout << header << std::endl;
         std::string message = str.substr(3, strlen(buffer) - 3);
         std::cout << message << std::endl;
-        if(header.compare("dzialam\n") == 0){
-            std::cout<< "GameOwner Działa z PID: " << this->fd << std::endl;
-            char confirm[] ="Potwierdzam dzialanie GameOwnera";
-            writeData(this->fd,confirm);
+        if(header.compare("Gs+") == 0){
+            //zmiana stanu gry
+            if(message.compare("start") == 0) {
+                playerMutex.lock();
+                gameMutex.lock();
+                if (Server::getPlayerList().empty()) {
+                    //brak graczy.
+                    gameMutex.unlock();
+                    char mess[] = "no players";
+                    writeData(this->fd, mess);
+                    playerMutex.unlock();
+
+                } else if (Game::gameInstance->getQuestions().empty()) {
+                    //na serwerze nie ma nawet jednego pytania
+                    playerMutex.unlock();
+                    gameMutex.unlock();
+                    char mess[] = "no questions";
+                    writeData(this->fd, mess);
+
+                } else {
+                    //jest przynajmniej jeden gracz
+                    playerMutex.unlock();
+
+                    gameMutex.unlock();
+
+                    //czekanie na graczy.
+                    sleep(READY_TIME);
+
+                    char gameOwnerMessage[] = "started";
+                    writeData(this->fd, gameOwnerMessage);
+                    //start nowego wątku dla gry.
+                    gameMutex.lock();
+                    Game::gameInstance->setIsStarted(true);
+                    gameThread = std::thread(&Game::runGame, Game::gameInstance);
+                    std::cout << "Utworzono Wątek gry" << std::endl;
+                    gameThread.detach();
+                }
+            }else if(message.compare("ready") == 0){
+                gameMutex.lock();
+                if(Game::gameInstance->getQuestions().empty()){
+                    char mess[] = "no questions";
+                    writeData(this->fd,mess);
+                    gameMutex.unlock();
+                } else{
+                    //zmiana stanu gry, na oczekiwanie na graczy.
+                    Game::gameInstance->setOnCreation(false);
+                    gameMutex.unlock();
+
+                }
+            }
+
         }else if(header.compare("Gq+") == 0){
             //przesłanie nowego pytania na serwer.
             std::cout<<"Odbieram pytanie od GameOwnera" << std::endl;

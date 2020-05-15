@@ -14,8 +14,6 @@ private:
     //mapa przechowująca informacje nt. graczy
     static std::map<std::string, Player*> playerList;
     static std::vector<Client*> clientsConnected;
-public:
-
 
 private:
 

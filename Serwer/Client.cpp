@@ -66,16 +66,17 @@ void Client::handleEvent(uint32_t events) {
 //
 //            }
            // writeData(fd,confirmMessage);
+            gameMutex.lock();
             if(!Game::gameInstance){
                 //nie ma gry, wyslanie tylko powiadomienia.
                 std::cout << "Player wants to join to not existing game" << std::endl;
                 char res[] = "nogame";
                 writeData(this->fd,res);
+                gameMutex.unlock();
             }
             else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
                 //gra jest tworzona, wysłanie odp. powiadomienia.
                 std::cout<<"Player wants to join game in creation" << std::endl;
-                gameMutex.lock();
                 char res[] = "creating";
                 writeData(this->fd,res);
                 gameMutex.unlock();
@@ -83,7 +84,7 @@ void Client::handleEvent(uint32_t events) {
             }else if(!Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
                 //gra czeka na graczy
 
-                gameMutex.lock();
+
                 printf("%s %s \n", niPin.at(1).c_str(),Game::gameInstance->getId());
                 playerMutex.lock();
                 if(niPin.at(1).compare(std::string(Game::gameInstance->getId())) == 0){
@@ -106,6 +107,7 @@ void Client::handleEvent(uint32_t events) {
                         deleteClient();
                         playerMutex.unlock();
                         std::cout << "Dodano gracza \n";
+                        gameMutex.unlock();
 
                     }else{
                         std::cout << "Player sent nick which already exists" << std::endl;
@@ -113,18 +115,24 @@ void Client::handleEvent(uint32_t events) {
                         char res[]= "nick";
                         writeData(this->fd,res);
                         playerMutex.unlock();
+                        gameMutex.unlock();
                     }
-                    gameMutex.unlock();
+
                 }else{
                     //pin się nie zgadza.
                     std::cout<<"Player sent wrong PIN to game" << std::endl;
                     writeData(this->fd,confirmMessage);
+                    playerMutex.unlock();
                     gameMutex.unlock();
                 }
 
             }else if(Game::gameInstance->isStarted1()){
                 //gra już trwa.
+                char mess[] = "already running";
+                writeData(this->fd,mess);
+                gameMutex.unlock();
             }
+
 
 
 
@@ -140,7 +148,7 @@ void Client::handleEvent(uint32_t events) {
                 Game *game = new Game(gameOwner);
                 game->setID(PIN);
                 //temp komenda do testowania dołączenia nowych graczy.
-                Game::gameInstance->setOnCreation(false);
+               // Game::gameInstance->setOnCreation(false);
                 char message[] = "accepted";
                 gameMutex.unlock();
                 writeData(this->fd,message);
@@ -161,6 +169,8 @@ void Client::handleEvent(uint32_t events) {
             }else{
                 //gra jest stworzona i rozpoczęta.
                 std::cout << "Gra trwa " << std::endl;
+                char mess[] = "already runnning";
+                writeData(this->fd,mess);
              gameMutex.unlock();
             }
 

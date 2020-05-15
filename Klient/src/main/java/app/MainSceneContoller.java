@@ -137,6 +137,7 @@ public class MainSceneContoller {
                                 AnswerPanelController controller = loader.getController();
                                 controller.setConnection(connection);
                                 controller.setPlayer(new Player(nick, 0));
+                                controller.getNickLabel().setText(nick);
                                 rootPane.getChildren().setAll(root);
                                 new Thread(controller).start();
                             } else if (response.equals("PIN\n")) {

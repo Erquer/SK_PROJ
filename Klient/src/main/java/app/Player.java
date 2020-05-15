@@ -1,9 +1,11 @@
 package app;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Alert;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Klasa implementująca reakcje na odp. serwera dla gracza.
@@ -12,10 +14,11 @@ public class Player {
 
     private String nick;
     private int points;
-    private List<Integer> yourAnswers;
-    private int actualRound;
+    private Map<SimpleStringProperty,SimpleStringProperty > yourAnswers;
+    //private int actualRound;
 
     public Player(String nick, int points) {
+        yourAnswers = new HashMap<>();
         this.nick = nick;
         this.points = points;
     }
@@ -23,6 +26,7 @@ public class Player {
 
     public void handleResponse(String response, AnswerPanelController controller){
         System.out.println(response);
+        String splitResponse[] = response.split(":");
 
         if(response.equals("cancel\n")){
             //tworzenie gry ktoś przerwał.
@@ -35,6 +39,20 @@ public class Player {
                     alert.showAndWait();
                 }
             });
+        }else if(splitResponse[0].equals("round")){
+            //nowa runda.
+            //wiadomość pytania i odpowiedzi podobnie jak wysyłanie ich na serwer. header:pytanie;poprawnaOdp;ansA;ansB;ansC;ansD
+            String question[] = splitResponse[1].split(";");
+            Question question1 = new Question(question[0],question[2],question[3],question[4],question[5],Integer.parseInt(question[1]));
+            Platform.runLater(()->{
+                //dodaj pytanie, ustaw pytanie w oknie. nowa runda.
+                controller.getGame().addQuestion(question1);
+                controller.setQuestion(question1);
+                controller.setRound(controller.getRound() + 1);
+            });
+        }else if(splitResponse[0].equals("points")){
+            //przyszła odpowiedź po rundzie z wynikiem.
+            this.points = Integer.parseInt(splitResponse[1]);
         }
     }
 
@@ -54,13 +72,13 @@ public class Player {
         this.points = points;
     }
 
-    public List<Integer> getYourAnswers() {
+    public Map<SimpleStringProperty, SimpleStringProperty> getYourAnswers() {
         return yourAnswers;
     }
 
-    public void setYourAnswers(List<Integer> yourAnswers) {
-        this.yourAnswers = yourAnswers;
-    }
+    //public void setYourAnswers(List<Integer> yourAnswers) {
+   //     this.yourAnswers = (Map<String, String>) yourAnswers;
+    //}
 
     @Override
     public String toString() {

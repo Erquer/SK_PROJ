@@ -17,6 +17,7 @@ private:
 public:
     //wektor odpowiedzi w kolejności.
     std::vector<char> answers;
+    char lastAnswer;
 
     // ==== Konstruktor i destruktor  ====
     Player(int pFd, std::string nick);

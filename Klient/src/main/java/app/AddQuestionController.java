@@ -89,8 +89,8 @@ public class AddQuestionController {
                 String n = textField.getText().substring(0, limit);
                 textField.setText(n);
             } else {
-                if (!newValue.matches("[a-zA-Z0-9]")) { // zabokowanie znaków niechcianych
-                    textField.setText(newValue.replaceAll("[^a-zA-Z0-9]", ""));
+                if (!newValue.matches("[a-zA-Z0-9 ]")) { // zabokowanie znaków niechcianych
+                    textField.setText(newValue.replaceAll("[^a-zA-Z0-9 ]", ""));
                 }
             }
         });

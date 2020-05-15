@@ -15,9 +15,20 @@ private:
     char id[5];
     std::string name;
     int roundTime;
-    static int round;
+    int round;
+public:
+    int getRound() const;
+
+    void setRound(int round);
+
+    static void addPlayerByTime(Player *player);
+
+    static std::vector<Player*> playerAnswers;
+
+private:
     std::vector<Question> questions;
-    std::vector<Player*> playerAnswers;
+    //odpowiedzi graczy, którzy odpowiadali w kolejności ich odpowiadania.
+
     //do połączenia samego klienta nie potrzeba mutexu.
 
 private:
@@ -26,6 +37,10 @@ private:
     bool onCreation;
 
     void resetPoints(bool reset = false);
+
+    void calculateResults();
+
+    void sendResults();
 
 
 public:
@@ -40,8 +55,6 @@ public:
     bool isGameOwnerSet() const; //sprawdza, czy jest już właściciel gry, jeżeli tak, nie dopusza innych klientów do tworzenia gry.
 
     void runGame();
-
-    static void addPlayersByTime();
 
     void deleteGame();
 

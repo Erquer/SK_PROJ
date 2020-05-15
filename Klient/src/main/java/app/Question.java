@@ -2,7 +2,6 @@ package app;
 
 import javafx.collections.FXCollections;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ public class Question {
     }
 
     public Question(String question, String a, String b, String c, String d, int correctAnswer) {
-        this.answers = new ArrayList<>();
+        this.answers = FXCollections.observableArrayList();
         this.question = question;
         this.answers.addAll(List.of(a,b,c,d));
         this.correctAnswer = correctAnswer;

@@ -13,7 +13,7 @@ public class GameOwner {
 
     private ObservableList<Player> players;
     private Game game;
-    private GameOwnerController controller;
+    private final GameOwnerController controller;
 
     public GameOwner(GameOwnerController controller) {
         this.players = FXCollections.observableArrayList();
@@ -34,7 +34,23 @@ public class GameOwner {
                     alert.showAndWait();
                 }
             });
-        }else if(header[0].equals("players")){
+        }else if(response.equals("no players\n")){
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Game");
+                alert.setHeaderText("No players waiting, can't start the game");
+                alert.showAndWait();
+            });
+        }else if(response.equals("no questions\n")){
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Game");
+                alert.setHeaderText("There are no questions in game");
+                alert.setContentText("Create some, to unlock the game");
+            });
+
+        }
+        else if(header[0].equals("players")){
             String players[] = header[1].split(";");
             ObservableList<Player> observableList = FXCollections.observableArrayList();
             for(String player : players){
@@ -47,7 +63,7 @@ public class GameOwner {
                     controller.fillPlayerList(observableList);
                 }
             });
-        }else {
+        }else if(response.equals("started\n")){
             System.out.println(response);
         }
 
