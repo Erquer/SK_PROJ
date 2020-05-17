@@ -4,7 +4,9 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Alert;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,10 +17,20 @@ public class Player {
     private String nick;
     private int points;
     private Map<SimpleStringProperty,SimpleStringProperty > yourAnswers;
+    private List<Integer> answers;
     //private int actualRound;
+
+    public List<Integer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Integer> answers) {
+        this.answers = answers;
+    }
 
     public Player(String nick, int points) {
         yourAnswers = new HashMap<>();
+        answers = new ArrayList<>();
         this.nick = nick;
         this.points = points;
     }
@@ -43,16 +55,18 @@ public class Player {
             //nowa runda.
             //wiadomość pytania i odpowiedzi podobnie jak wysyłanie ich na serwer. header:pytanie;poprawnaOdp;ansA;ansB;ansC;ansD
             String question[] = splitResponse[1].split(";");
-            Question question1 = new Question(question[0],question[2],question[3],question[4],question[5],Integer.parseInt(question[1]));
+            Question question1 = new Question(question[1],question[3],question[4],question[5],question[6],Integer.parseInt(question[2]));
             Platform.runLater(()->{
                 //dodaj pytanie, ustaw pytanie w oknie. nowa runda.
                 controller.getGame().addQuestion(question1);
                 controller.setQuestion(question1);
-                controller.setRound(controller.getRound() + 1);
+                controller.setRound(Integer.parseInt(question[0]));
             });
         }else if(splitResponse[0].equals("points")){
             //przyszła odpowiedź po rundzie z wynikiem.
             this.points = Integer.parseInt(splitResponse[1]);
+        }else {
+            System.out.println(response);
         }
     }
 

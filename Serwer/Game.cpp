@@ -107,6 +107,8 @@ void Game::addQuestion(Question &question) {
 char startGameMessage[] = "Game is Starting";
 char roundMessage[] = "round:";
 char resultMessage[] = "points:";
+char endMessage[] = "end:";
+char ownerMess[] = "round";
 
 void Game::runGame() {
 
@@ -120,25 +122,26 @@ void Game::runGame() {
      * 5. Zablokowanie graczom możliwości gry przez zinkrementowanie rundy.
      * 6. Odesłanie wyników do graczy
      */
-    char buffer[BUFFER_SIZE];
+    //char buffer[BUFFER_SIZE];
     //zaczęcie pierwszej rundy.
     roundMutex.lock();
     round++;
     roundMutex.unlock();
     Server::broadcast(startGameMessage);
     playerMutex.lock();
-    //gra się toczy, dopóki na serwerze jest chociaż jeden gracz.
-    while(!Server::getPlayerList().empty()){
+    //gra się toczy, dopóki na serwerze jest chociaż jeden gracz. lub gra się nie skończyła.
+    while(!Server::getPlayerList().empty() && round <= questions.size()){
         playerMutex.unlock();
 
         //tworzenie wiadomości o nowej rundzie
         std::string message(roundMessage);
-        message += round + ';';
+        message += std::to_string(round) + ';';
         message.append(createQuestionString(&questions.at(round-1)));
         std::cout << message << std::endl;
         char tableMessage[message.size()+1];
         strcpy(tableMessage,message.c_str());
         tableMessage[message.size()] = '\0';
+        std::cout << tableMessage << std::endl;
         //wysłanie wiadomości o nowej rundzie do graczy.
         Server::broadcast(tableMessage);
 
@@ -161,11 +164,18 @@ void Game::runGame() {
         sendResults();
 
 
+    if(isGameOwnerSet())
+        writeData(this->getOwner()->fd,ownerMess);
+
+
 
 
 
     }
-
+    if(isGameOwnerSet()){
+        sendEveryThingToGameOwner();
+    }
+    Server::broadcast(endMessage);
     std::cout << "Gra zakonczona " << std::endl;
 
     delete this;
@@ -173,6 +183,26 @@ void Game::runGame() {
 }
 
 
+void Game::sendEveryThingToGameOwner(){
+    //na koniec gry wysyłane są wszystkie dane nt. graczy i ich wyników.
+    std::string message(endMessage);
+    playerMutex.lock();
+    for(const auto &pl: Server::getPlayerList()){
+        message.append(createPlayerMessage(pl.second));
+    }
+    playerMutex.unlock();
+    message.at(message.size()-1) = '\0';
+    char charMessage[message.size()];
+    strcpy(charMessage,message.c_str());
+    writeData(gameInstance->getOwner()->fd,charMessage);
+    std::cout << "wyslano wiadomosc z danymi do game ownera: " << message << std::endl;
+
+
+}
+
+void Game::sendBestThreeToPlayers(){
+
+}
 
 void Game::addPlayerByTime(Player *player) {
     gameInstance->playerAnswers.push_back(player);
@@ -214,15 +244,29 @@ void Game::calculateResults() {
 void Game::sendResults() {
     playerMutex.lock();
 
-    for(const auto &player: Server::getPlayerList()){
+    for (const auto &player: Server::getPlayerList()) {
         std::string resultString = resultMessage;
         resultString.append(std::to_string(player.second->getPoints()));
+        char result[resultString.size() + 1];
+        std::strcpy(result, resultString.c_str());
+        result[resultString.size()] = '\0';
+        writeData(player.second->fd, result);
     }
-
+    sleep(1);
     playerMutex.unlock();
 
 }
+std::string Game::createPlayerMessage(Player *player){
+    //tworzy string zawierający nick, odpowiedzi i punkty danego gracza.
+    //Postać: nick;<odp>;<odp>;...;<punkty>|
+    std::string playerString = player->getNick();
+    for(size_t i = 0; i < gameInstance->getQuestions().size(); i++){
+        playerString.append(';'  + std::to_string(player->answers.at(i)));
+    }
+    playerString.append(std::to_string(player->getPoints()) + '|');
 
+    return playerString;
+}
 
 
 

@@ -68,7 +68,7 @@ public class AddQuestionController {
             String st = ((RadioButton)group.getSelectedToggle()).getText();
             char ch = st.charAt(0);
             int ans = ch - 65;
-            Question temp = new Question(question.getText(),aAnswer.getText(),bAnswer.getText(),cAnswer.getText(),dAnswer.getText(),ans);
+            Question temp = new Question(question.getText().trim(),aAnswer.getText().trim(),bAnswer.getText().trim(),cAnswer.getText().trim(),dAnswer.getText().trim(),ans);
             mainList.add(temp);
 
             closeStage(event);

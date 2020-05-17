@@ -4,6 +4,7 @@
 #include <sys/epoll.h>
 #include <arpa/inet.h>
 #include <iostream>
+#include <sstream>
 #include <cstring>
 #include <unistd.h>
 #include "Server.h"
@@ -29,17 +30,21 @@ void Player::handleEvent(uint32_t events) {
         std::string str(buffer);
         std::string header = str.substr(0,3);
         std::string message = str.substr(4,str.size() - 4);
+        std::vector<std::string> splited = split(message,':');
 
         if(header.compare("Pa+") == 0){
             //przesłanie odpowiedzi.
             roundMutex.lock();
-            int round = atoi(reinterpret_cast<const char *>(buffer[3]));
+            std::cout << splited.at(0) << std::endl;
+            int round;
+            std::istringstream (splited.at(0)) >> round;
             if(round == Game::gameInstance->getRound()){
                 //runda się zgadza
-                answers.push_back(message[message.length()-1]);
-                lastAnswer = message[message.length()-1];
+                answers.push_back(splited.at(1)[0]);
+                lastAnswer = splited.at(1)[0];
                 Game::addPlayerByTime(this);
             }else{
+            //ignore messages
 
             }
 

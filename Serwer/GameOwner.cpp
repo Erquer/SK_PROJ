@@ -49,7 +49,6 @@ void GameOwner::handleEvent(uint32_t events) {
                 } else {
                     //jest przynajmniej jeden gracz
                     playerMutex.unlock();
-
                     gameMutex.unlock();
 
                     //czekanie na graczy.
@@ -73,6 +72,8 @@ void GameOwner::handleEvent(uint32_t events) {
                 } else{
                     //zmiana stanu gry, na oczekiwanie na graczy.
                     Game::gameInstance->setOnCreation(false);
+                    char mess[] = "ready";
+                    writeData(this->fd,mess);
                     gameMutex.unlock();
 
                 }

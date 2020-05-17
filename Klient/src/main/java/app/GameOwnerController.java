@@ -155,6 +155,7 @@ public class GameOwnerController implements Runnable {
     void fillPlayerList(ObservableList<Player> list){
         if(!players.isEmpty()){
             players.remove(0,players.size());
+            playerList.getItems().remove(0,playerList.getItems().size());
         }
         players.addAll(list);
     }

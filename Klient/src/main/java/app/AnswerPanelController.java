@@ -19,6 +19,7 @@ public class AnswerPanelController implements Runnable {
     private Player player;
     private Connection connection;
     private int round;
+    private int lastRound;
     private Game game;
     //FXML Fields
     @FXML
@@ -66,7 +67,9 @@ public class AnswerPanelController implements Runnable {
         roundLabel.setText("0");
         pointLabel.setText("0");
         round = 0;
+        lastRound = 0;
         game = new Game();
+        setButtons(true);
 
     }
 
@@ -134,25 +137,29 @@ public class AnswerPanelController implements Runnable {
 
     public void setRound(int round) {
         this.round = round;
+        roundLabel.setText(String.valueOf(round));
     }
     @Override
     public void run() {
-        try {
-            String response = connection.read();
-            System.out.println("Przyszła odpowiedź dla gracza");
-            player.handleResponse(response,this);
+        while (true) {
+            try {
+                String response = connection.read();
+                System.out.println("Przyszła odpowiedź dla gracza");
+                player.handleResponse(response, this);
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    if(Integer.parseInt(roundLabel.getText()) < round){
-                        setButtons(false);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (lastRound < round) {
+                            setButtons(false);
+                            lastRound = round;
+                        }
+                        //  roundLabel.setText(String.valueOf(round));
                     }
-                    roundLabel.setText(String.valueOf(round));
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

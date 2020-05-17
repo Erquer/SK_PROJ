@@ -1,10 +1,17 @@
 package app;
 
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+import javafx.util.Duration;
+
+import java.io.IOException;
 
 /**
  * Klasa implementująca reakcje na zaptania Właściciela gry.
@@ -49,8 +56,24 @@ public class GameOwner {
                 alert.setContentText("Create some, to unlock the game");
             });
 
-        }
-        else if(header[0].equals("players")){
+        }else if(response.equals("ready\n")){
+            Platform.runLater(() -> {
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        controller.startButton.setDisable(false);
+                        controller.stateLabel.setText("Waiting For Players");
+                    }
+                }));
+                timeline.setCycleCount(1);
+                timeline.play();
+            });
+        }else if(response.equals("started\n")){
+            Platform.runLater(()->{
+                controller.stateLabel.setText("Started");
+            });
+            System.out.println(response);
+        }else if(header[0].equals("players")){
             String players[] = header[1].split(";");
             ObservableList<Player> observableList = FXCollections.observableArrayList();
             for(String player : players){
@@ -63,8 +86,32 @@ public class GameOwner {
                     controller.fillPlayerList(observableList);
                 }
             });
-        }else if(response.equals("started\n")){
-            System.out.println(response);
+        }else if(header[0].equals("round")){
+            //wiadomość, że rozpoczęła się dana runda. GameOwner Dostaje wyniki wszystkich graczy.
+            Platform.runLater(()->{
+                try {
+                    controller.getConnection().sendMessage("Gp+");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }else if(header[0].equals("end")){
+            //koniec gry, serwer przysyła nam wszystkie dane użytkowników.
+            String playersResults[] = header[1].split("\\|");
+            ObservableList<Object> playerList = FXCollections.emptyObservableList();
+            for(String player:playersResults){
+                String playerScore[] = player.split(";");
+                Player player1 = new Player(playerScore[0],Integer.parseInt(playerScore[playerScore.length-1]));
+                for(int i = 1; i < playerScore.length-1; i++){
+                    player1.getAnswers().add(Integer.parseInt(playerScore[i]));
+                }
+                playerList.add(player1);
+                Platform.runLater(()->{
+
+                });
+
+            }
+
         }
 
     }

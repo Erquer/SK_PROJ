@@ -95,6 +95,13 @@ public:
     void setOnCreation(bool onCreation);
 
     Game(GameOwner *gameOwner);
+
+    void sendEveryThingToGameOwner();
+
+    void sendBestThreeToPlayers();
+
+
+    std::string createPlayerMessage(Player *player);
 };
 
 
