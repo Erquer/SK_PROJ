@@ -40,6 +40,7 @@ public class Main extends Application {
         int port = 1400;
 
         if(getParameters().getRaw().size() >= 2){
+            System.out.println(getParameters().getRaw().get(0) + " " + getParameters().getRaw().get(1));
             IP = getParameters().getRaw().get(0);
             port = Integer.parseInt(getParameters().getRaw().get(1));
         }

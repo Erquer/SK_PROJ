@@ -4,6 +4,7 @@ app/GameOwner$2.class
 app/GameOwnerController$2.class
 app/Main.class
 app/GameOwner$1.class
+app/PlayerSummaryController.class
 app/MainSceneContoller$2.class
 app/AnswerPanelController.class
 app/Launcher.class
@@ -14,6 +15,7 @@ app/GameOwner$3.class
 app/Connection.class
 app/GameOwnerController.class
 app/AnswerPanelController$1.class
+app/GameOwnerSummaryController.class
 app/MainSceneContoller$1.class
 app/Game.class
 app/Player.class

@@ -29,27 +29,22 @@ void Player::handleEvent(uint32_t events) {
         std::cout << buffer << " Wysyłam potwierdzenie do klienta" <<std::endl;
         std::string str(buffer);
         std::string header = str.substr(0,3);
-        std::string message = str.substr(4,str.size() - 4);
+        std::string message = str.substr(3,str.size() - 3);
         std::vector<std::string> splited = split(message,':');
 
         if(header.compare("Pa+") == 0){
             //przesłanie odpowiedzi.
             roundMutex.lock();
-            std::cout << splited.at(0) << std::endl;
+            //std::cout << splited.at(0) << std::endl;
             int round;
             std::istringstream (splited.at(0)) >> round;
+            //printf("%d : %d \n", round, Game::gameInstance->getRound());
             if(round == Game::gameInstance->getRound()){
                 //runda się zgadza
                 answers.push_back(splited.at(1)[0]);
                 lastAnswer = splited.at(1)[0];
                 Game::addPlayerByTime(this);
-            }else{
-            //ignore messages
-
             }
-
-
-
             roundMutex.unlock();
         }
 

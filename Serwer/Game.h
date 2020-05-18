@@ -36,7 +36,7 @@ private:
     bool isStarted;
     bool onCreation;
 
-    void resetPoints(bool reset = false);
+
 
     void calculateResults();
 

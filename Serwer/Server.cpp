@@ -13,7 +13,7 @@
 std::map<std::string, Player* > Server::playerList;
 std::vector<Client*> Server::clientsConnected;
 
-const std::map<std::string, Player *> &Server::getPlayerList() {
+std::map<std::string, Player *> Server::getPlayerList() {
     return playerList;
 }
 
@@ -26,7 +26,7 @@ crServerSocket(argc,argv);
 }
 
 Server::~Server() {
-    pthread_cancel(gameThread.native_handle());
+  //  pthread_cancel(gameThread.native_handle());
     char exit[] = "lost";
     broadcast(exit);
     for(auto it: playerList){
@@ -96,12 +96,15 @@ void Server::addClient(Client *client) {
 }
 
 void Server::crServerSocket(int argc, char **argv) {
-    sockAddr = {
-            .sin_family = AF_INET,
-            .sin_port   = htons(atoi(argv[2])),
-            .sin_addr   = {inet_addr(argv[1])}
-    };
-    fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+//    sockAddr = {
+//            .sin_family = PF_INET,
+//            .sin_port   = htons(atoi(argv[2])),
+//            .sin_addr.s_addr  = INADDR_ANY
+//    };
+    sockAddr.sin_family =PF_INET;
+    sockAddr.sin_port = htons(atoi(argv[2]));
+    sockAddr.sin_addr.s_addr = INADDR_ANY;
+    fd = socket(PF_INET, SOCK_STREAM, 0);
     if (fd == -1)
         error(1, errno, "Failed to create server socket\n");
 

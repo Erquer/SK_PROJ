@@ -52,7 +52,7 @@ public:
 
 
     // ====  Gettery i Settery ====
-    static const std::map<std::string, Player *> &getPlayerList();
+    static std::map<std::string, Player *> getPlayerList();
 
     static void setPlayerList(const std::map<std::string, Player *> &playerList);
 

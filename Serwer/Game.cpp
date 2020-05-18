@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Server.h"
 #include "utils.h"
+#include <algorithm>
 
 Game *Game::gameInstance;
 std::vector<Player*> Game::playerAnswers;
@@ -71,18 +72,13 @@ bool Game::isOnCreation() const {
 void Game::setOnCreation(bool onCreation) {
     Game::onCreation = onCreation;
 }
-
+void clearPlayers(){
+    Server::getPlayerList().clear();
+}
 Game::~Game() {
     gameInstance = nullptr;
-    printf("Game Destrucion \n");
-
-}
-
-
-void Game::resetPoints(bool reset) {
-
-
-
+    clearPlayers();
+    printf("Game Destrucion; Closing Server. \n");
 }
 
 bool Game::isGameOwnerSet() const {
@@ -130,7 +126,7 @@ void Game::runGame() {
     Server::broadcast(startGameMessage);
     playerMutex.lock();
     //gra się toczy, dopóki na serwerze jest chociaż jeden gracz. lub gra się nie skończyła.
-    while(!Server::getPlayerList().empty() && round <= questions.size()){
+    while(!Server::getPlayerList().empty() && round <= (int)questions.size()){
         playerMutex.unlock();
 
         //tworzenie wiadomości o nowej rundzie
@@ -167,15 +163,11 @@ void Game::runGame() {
     if(isGameOwnerSet())
         writeData(this->getOwner()->fd,ownerMess);
 
-
-
-
-
     }
     if(isGameOwnerSet()){
         sendEveryThingToGameOwner();
     }
-    Server::broadcast(endMessage);
+    sendBestThreeToPlayers();
     std::cout << "Gra zakonczona " << std::endl;
 
     delete this;
@@ -200,12 +192,39 @@ void Game::sendEveryThingToGameOwner(){
 
 }
 
-void Game::sendBestThreeToPlayers(){
-
+bool comparePoints(Player *p1, Player *p2){
+    return (p1->getPoints() > p2->getPoints());
 }
 
+void Game::sendBestThreeToPlayers(){
+    std::vector<Player*> players;
+    playerMutex.lock();
+    for(const auto &pl:Server::getPlayerList()){
+        players.push_back(pl.second);
+    }
+    playerMutex.unlock();
+    std::sort(players.begin(),players.end(),comparePoints);
+    std::string bestString(endMessage);
+    if(players.size() >= 3) {
+        for (int i = 0; i < 3; i++) {
+            bestString.append(players.at(i)->getNick() + ';' + std::to_string(players.at(i)->getPoints()) + ':');
+        }
+    }
+    else{
+        for(size_t i = 0; i < players.size();i++){
+            bestString.append(players.at(i)->getNick() + ';' + std::to_string(players.at(i)->getPoints()) + ':');
+
+        }
+    }
+    char charMessage[bestString.size()];
+    strcpy(charMessage,bestString.c_str());
+    charMessage[bestString.size()-1] = '\0';
+    Server::broadcast(charMessage);
+}
+
+
 void Game::addPlayerByTime(Player *player) {
-    gameInstance->playerAnswers.push_back(player);
+    Game::playerAnswers.push_back(player);
 }
 
 int Game::getRound() const {
@@ -220,30 +239,30 @@ void Game::calculateResults() {
     playerMutex.lock();
     //pierwsza odpowiedź otrzymuje max punktów.
     int actualPoints = FIRST_ANSWER_POINTS;
-    for(auto it = gameInstance->playerAnswers.begin(); it != gameInstance->playerAnswers.end(); ++it){
-        Player *player = *it;
+    std::cout << "Calculating the results" << std::endl;
+    for(auto *player : Game::playerAnswers){
+        std::cout << "sprawdzam gracza o nicku: " << player->getNick() << std::endl;
         //jeżeli gracz po drodze się rozłączył, przechodzimy do kolejnego.
         if(!Server::checkList(player->getNick())){
             continue;
         }
         //jeżeli ostatnią odpowiedzią gracza, była poprawna, dodajemy mu punkty, i obniżamy próg dla kolejnych
         if(player->lastAnswer == questions.at(round-2).getCorrectAnswer()) {
+            std::cout << "Player otrzymuje punkty: " << actualPoints << std::endl;
             player->setPoints(player->getPoints() + actualPoints);
             //dopóki możemy, obniżamy punkty, później gracze otrzymują tylko to co zostanie.
             if(actualPoints>=DECREASED_POINTS)
                     actualPoints -= DECREASED_POINTS;
 
         }
-
-
-
     }
+    Game::playerAnswers.clear();
     playerMutex.unlock();
 }
 
 void Game::sendResults() {
     playerMutex.lock();
-
+    std::cout << "Sending the Results" << std::endl;
     for (const auto &player: Server::getPlayerList()) {
         std::string resultString = resultMessage;
         resultString.append(std::to_string(player.second->getPoints()));
@@ -259,11 +278,14 @@ void Game::sendResults() {
 std::string Game::createPlayerMessage(Player *player){
     //tworzy string zawierający nick, odpowiedzi i punkty danego gracza.
     //Postać: nick;<odp>;<odp>;...;<punkty>|
-    std::string playerString = player->getNick();
+    std::string playerString = player->getNick() + ";";
     for(size_t i = 0; i < gameInstance->getQuestions().size(); i++){
-        playerString.append(';'  + std::to_string(player->answers.at(i)));
+        std::string s(1,player->answers.at(i));
+        playerString.append(s + ";" );
+
     }
-    playerString.append(std::to_string(player->getPoints()) + '|');
+    playerString.append(std::to_string(player->getPoints()));
+    playerString.append("=");
 
     return playerString;
 }

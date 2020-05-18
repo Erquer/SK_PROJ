@@ -75,8 +75,8 @@ public class AddQuestionController {
 
         }else{
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Puste Pole");
-            alert.setHeaderText("Żadne polenie może być puste, proszę uzupełnić brakujące.");
+            alert.setTitle("Empty Field");
+            alert.setHeaderText("Every field has to be filled, fill missing fields.");
         }
 
     }

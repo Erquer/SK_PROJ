@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -41,6 +42,8 @@ public class GameOwnerController implements Runnable {
     public ListView<Player> playerList;
     @FXML
     public ListView<Question> questionList;
+    @FXML
+    public AnchorPane rootPane;
 
     private ObservableList<Question> questions = FXCollections.observableArrayList();
     private ObservableList<Player> players = FXCollections.observableArrayList();
@@ -99,6 +102,7 @@ public class GameOwnerController implements Runnable {
         try {
             //wysłanie sygnału, że gra oczekuje na graczy i po ustalonym czasie się zacznie.
             connection.sendMessage("Gs+start");
+            startButton.setDisable(true);
         } catch (IOException e) {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setTitle("CONNECTION");
@@ -111,6 +115,8 @@ public class GameOwnerController implements Runnable {
         //wysyła znak, że gra jest gotowa i może oczekiwać na graczy.
         try {
             connection.sendMessage("Gs+ready");
+            readyButton.setDisable(true);
+            addQuestionButton.setDisable(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -166,7 +172,7 @@ public class GameOwnerController implements Runnable {
         try {
             while (true){
                 String response = connection.read();
-                System.out.println("Przyszła odpowiedź");
+               // System.out.println("Przyszła odpowiedź");
                 gameOwner.handleResponse(response);
 
             }
@@ -176,7 +182,7 @@ public class GameOwnerController implements Runnable {
                 public void run() {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Connection");
-                    alert.setHeaderText("Utracono połączenie");
+                    alert.setHeaderText("Connection lost");
                     alert.showAndWait();
                 }
             });
@@ -185,9 +191,9 @@ public class GameOwnerController implements Runnable {
 
     }
 
-    public ObservableList<Player> getPlayers() {
-        return players;
-    }
+//    public ObservableList<Player> getPlayers() {
+//        return players;
+//    }
 
     public void setPlayers(ObservableList<Player> players) {
         this.players = players;

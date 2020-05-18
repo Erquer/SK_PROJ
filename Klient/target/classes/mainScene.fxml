@@ -6,9 +6,9 @@
 
 <AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainSceneContoller">
    <children>
-      <Button fx:id="createButton" layoutX="140.0" layoutY="162.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="122.0" text="Tworzyć Grę" />
-      <Button fx:id="playButton" layoutX="360.0" layoutY="162.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Grać" />
-      <Label layoutX="140.0" layoutY="100.0" text="Co chcesz zrobić?">
+      <Button fx:id="createButton" layoutX="140.0" layoutY="162.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="122.0" text="Create" />
+      <Button fx:id="playButton" layoutX="360.0" layoutY="162.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Play" />
+      <Label layoutX="74.0" layoutY="100.0" text="What do You want to do?">
          <font>
             <Font size="36.0" />
          </font>

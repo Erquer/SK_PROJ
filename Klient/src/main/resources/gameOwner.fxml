@@ -8,12 +8,12 @@
       <Button fx:id="startButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#onButtonClicked" prefHeight="26.0" prefWidth="106.0" text="Start" />
       <Button fx:id="addQuestionButton" layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onMouseClicked="#addQuestion" text="Add Question" />
       <Button fx:id="getPlayersButton" layoutX="14.0" layoutY="113.0" mnemonicParsing="false" onMouseClicked="#getPlayers" prefHeight="26.0" prefWidth="106.0" text="Get Players" />
-      <Button fx:id="readyButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="Ready" onMouseClicked="#onReadyButtonClicked" />
+      <Button fx:id="readyButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onMouseClicked="#onReadyButtonClicked" prefHeight="26.0" prefWidth="106.0" text="Ready" />
       <ListView fx:id="playerList" layoutX="386.0" layoutY="25.0" prefHeight="362.0" prefWidth="200.0" />
       <ListView fx:id="questionList" layoutX="159.0" layoutY="25.0" prefHeight="362.0" prefWidth="200.0" />
-      <Label layoutX="386.0" layoutY="6.0" prefHeight="16.0" prefWidth="200.0" text="Lista Połączonych Graczy" textAlignment="CENTER" />
-      <Label layoutX="159.0" layoutY="6.0" prefHeight="16.0" prefWidth="200.0" text="Lista Pytań" textAlignment="CENTER" />
+      <Label layoutX="386.0" layoutY="6.0" prefHeight="16.0" prefWidth="200.0" text="Players List" textAlignment="CENTER" />
+      <Label layoutX="159.0" layoutY="6.0" prefHeight="16.0" prefWidth="200.0" text="Question List" textAlignment="CENTER" />
       <Label layoutX="14.0" layoutY="151.0" text="Game State:" />
-      <Label fx:id="stateLabel" layoutX="67.0" layoutY="174.0" />
+      <Label fx:id="stateLabel" layoutX="67.0" layoutY="174.0" prefHeight="16.0" prefWidth="0.0" />
    </children>
 </AnchorPane>

@@ -1,9 +1,13 @@
 package app;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +20,7 @@ public class Player {
 
     private String nick;
     private int points;
-    private Map<SimpleStringProperty,SimpleStringProperty > yourAnswers;
+    private Map<String ,String  > yourAnswers;
     private List<Integer> answers;
     //private int actualRound;
 
@@ -47,8 +51,11 @@ public class Player {
                 public void run() {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Game");
-                    alert.setHeaderText("GameOwner opóścił tworzenie gry.");
+                    alert.setHeaderText("GameOwner left game creation.");
+                    alert.setContentText("Closing app.");
                     alert.showAndWait();
+                    System.exit(0);
+                    //TODO: Przejście do panelu głównego.
                 }
             });
         }else if(splitResponse[0].equals("round")){
@@ -64,7 +71,45 @@ public class Player {
             });
         }else if(splitResponse[0].equals("points")){
             //przyszła odpowiedź po rundzie z wynikiem.
-            this.points = Integer.parseInt(splitResponse[1]);
+            this.points = Integer.parseInt(splitResponse[1].trim());
+            Platform.runLater(()->{
+                controller.pointLabel.setText(String.valueOf(this.points));
+            });
+        }else if(splitResponse[0].equals("end")) {
+                //koniec gry, otwórz podsumowanie.
+            // end:<bestThree> w postaci <nick>;<points>:
+            System.out.println("Kończymy grę");
+            ArrayList<String > temp = new ArrayList<>();
+            Platform.runLater(()->{
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("playerSummary.fxml"));
+                try {
+                    Parent root = loader.load();
+
+                    for(int i = 1; i < splitResponse.length ; i++){
+                        String pl[] = splitResponse[i].split(";");
+                        temp.add(new String(pl[0] + ": " + pl[1]));
+                    }
+                    PlayerSummaryController controller1 = loader.getController();
+                    //ustawianie best Three
+                    controller1.bestThreeView.getItems().addAll(temp);
+                    //wypełnianie pół związanych z pytaniami.
+                    controller1.setQuestions(FXCollections.observableArrayList(yourAnswers.keySet()));
+                    controller1.setAnswers(FXCollections.observableArrayList(yourAnswers.values()));
+                    List<Question> questions = controller.getGame().getQuestionList();
+                    ObservableList<String> correct = FXCollections.observableArrayList();
+                    for(Question question: questions){
+                        correct.add(question.getAnswers().get(question.getCorrectAnswer()));
+                    }
+                    controller1.setCorrect(correct);
+                    controller1.nickLabel.setText(this.getNick());
+                    controller1.scoreLabel.setText(String.valueOf(this.getPoints()));
+                    controller.rootPane.getChildren().setAll(root);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+
         }else {
             System.out.println(response);
         }
@@ -86,7 +131,7 @@ public class Player {
         this.points = points;
     }
 
-    public Map<SimpleStringProperty, SimpleStringProperty> getYourAnswers() {
+    public Map<String, String> getYourAnswers() {
         return yourAnswers;
     }
 

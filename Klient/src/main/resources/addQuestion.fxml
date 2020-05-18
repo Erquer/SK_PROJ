@@ -9,17 +9,17 @@
       <TextField fx:id="aAnswer" layoutX="215.0" layoutY="47.0" />
       <TextField fx:id="bAnswer" layoutX="215.0" layoutY="80.0" />
       <TextField fx:id="cAnswer" layoutX="215.0" layoutY="114.0" />
-      <Label layoutX="86.0" layoutY="19.0" text="Pytanie" />
-      <Label layoutX="86.0" layoutY="52.0" text="Odp. A" />
-      <Label layoutX="86.0" layoutY="85.0" text="Odp. B" />
-      <Label layoutX="86.0" layoutY="119.0" text="Odp. C" />
-      <Label layoutX="86.0" layoutY="153.0" text="Odp. D" />
+      <Label layoutX="86.0" layoutY="19.0" text="Question" />
+      <Label layoutX="86.0" layoutY="52.0" text="ans. A" />
+      <Label layoutX="86.0" layoutY="85.0" text="ans. B" />
+      <Label layoutX="86.0" layoutY="119.0" text="ans. C" />
+      <Label layoutX="86.0" layoutY="153.0" text="ans. D" />
       <TextField fx:id="dAnswer" layoutX="215.0" layoutY="148.0" />
       <RadioButton fx:id="a" layoutX="394.0" layoutY="152.0" mnemonicParsing="false" text="D" />
       <RadioButton fx:id="b" layoutX="394.0" layoutY="118.0" mnemonicParsing="false" text="C" />
       <RadioButton fx:id="c" layoutX="394.0" layoutY="84.0" mnemonicParsing="false" text="B" />
       <RadioButton fx:id="d" layoutX="394.0" layoutY="51.0" mnemonicParsing="false" text="A" />
-      <Label layoutX="394.0" layoutY="19.0" text="Zaznacz poprawną odpowiedź" />
+      <Label layoutX="394.0" layoutY="19.0" text="Check Correct Answer" />
       <Button fx:id="addButton" layoutX="523.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#addQuestionClicker" prefHeight="26.0" prefWidth="63.0" text="Add" />
       <Button fx:id="cancelButton" layoutX="23.0" layoutY="187.0" mnemonicParsing="false" text="Cancel" />
    </children>

@@ -8,10 +8,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Klasa implementująca reakcje na zaptania Właściciela gry.
@@ -58,11 +62,12 @@ public class GameOwner {
 
         }else if(response.equals("ready\n")){
             Platform.runLater(() -> {
+                controller.stateLabel.setText("Waiting For Players");
                 Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
                         controller.startButton.setDisable(false);
-                        controller.stateLabel.setText("Waiting For Players");
+
                     }
                 }));
                 timeline.setCycleCount(1);
@@ -97,20 +102,50 @@ public class GameOwner {
             });
         }else if(header[0].equals("end")){
             //koniec gry, serwer przysyła nam wszystkie dane użytkowników.
-            String playersResults[] = header[1].split("\\|");
-            ObservableList<Object> playerList = FXCollections.emptyObservableList();
-            for(String player:playersResults){
-                String playerScore[] = player.split(";");
-                Player player1 = new Player(playerScore[0],Integer.parseInt(playerScore[playerScore.length-1]));
-                for(int i = 1; i < playerScore.length-1; i++){
-                    player1.getAnswers().add(Integer.parseInt(playerScore[i]));
+            String playersResults[] = header[1].split("=");
+            Platform.runLater(()->{
+                ObservableList<Player> playerList = FXCollections.observableArrayList();
+                for(String player:playersResults){
+                    String playerScore[] = player.split(";");
+                    Player player1 = new Player(playerScore[0],Integer.parseInt(playerScore[playerScore.length-1].trim()));
+                    for(int i = 1; i < playerScore.length-1; i++){
+                        player1.getAnswers().add(Integer.parseInt(playerScore[i].trim()));
+                    }
+                    playerList.add(player1);
+
                 }
-                playerList.add(player1);
-                Platform.runLater(()->{
+                //TODO: przejście do okna summary, i tam wyświetlanie wyników z rankingiem i wszyskimi odpowiedziami graczy w postaci listy.
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("gameOwnerSummary.fxml"));
+                    Parent root = loader.load();
+                    GameOwnerSummaryController controller1 = loader.getController();
+                    List<String > playerStrings = new ArrayList<>();
+                    for(Player player:playerList){
+                        String playerString = player.getNick() + ", ";
+                        for(int a: player.getAnswers()){
+                            playerString += (char) (a + 65) + ", ";
+                        }
+                        playerString += "Score: " + player.getPoints();
+                        playerStrings.add(playerString);
+                    }
+                    controller1.setPlayerView(playerStrings);
+                    List<String> questionList = new ArrayList<>();
+                    for(Question question: game.getQuestionList()){
+                        String questionString = question.getQuestion() + ", ";
+                        for(String ans:question.getAnswers()){
+                            questionString += ans + ", ";
+                        }
+                        questionString += "Correct: " + (char) (question.getCorrectAnswer() + 65);
+                        questionList.add(questionString);
+                    }
+                    controller1.setQaView(questionList);
+                    this.controller.rootPane.getChildren().setAll(root);
 
-                });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            }
+            });
 
         }
 

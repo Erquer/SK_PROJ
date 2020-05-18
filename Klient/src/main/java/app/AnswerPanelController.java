@@ -1,12 +1,9 @@
 package app;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -22,12 +19,6 @@ public class AnswerPanelController implements Runnable {
     private int lastRound;
     private Game game;
     //FXML Fields
-    @FXML
-    public TableView answersTable;
-    @FXML
-    public TableColumn questionColumn;
-    @FXML
-    public TableColumn answerColumn;
     @FXML
     public AnchorPane rootPane;
     @FXML
@@ -80,22 +71,22 @@ public class AnswerPanelController implements Runnable {
             if (odpA.equals(event.getSource())) {
                 System.out.println("Kliknieto odpowiedź A");
                 header += "0";
-                player.getYourAnswers().put(new SimpleStringProperty(questionLabel.getText()),new SimpleStringProperty(odpA.getText()));
+                player.getYourAnswers().put(questionLabel.getText(),odpA.getText());
                 connection.sendMessage(header);
             } else if (odpB.equals(event.getSource())) {
                 System.out.println("Kliknieto odpowiedź B");
                 header += "1";
-                player.getYourAnswers().put(new SimpleStringProperty(questionLabel.getText()),new SimpleStringProperty(odpB.getText()));
+                player.getYourAnswers().put(questionLabel.getText(),odpB.getText());
                 connection.sendMessage(header);
             } else if (odpC.equals(event.getSource())) {
                 System.out.println("Kliknieto odpowiedź C");
                 header += "2";
-                player.getYourAnswers().put(new SimpleStringProperty(questionLabel.getText()),new SimpleStringProperty(odpC.getText()));
+                player.getYourAnswers().put(questionLabel.getText(),odpC.getText());
                 connection.sendMessage(header);
             } else if (odpD.equals(event.getSource())) {
                 System.out.println("Kliknieto odpowiedź D");
                 header += "3";
-                player.getYourAnswers().put(new SimpleStringProperty(questionLabel.getText()),new SimpleStringProperty(odpD.getText()));
+                player.getYourAnswers().put(questionLabel.getText(),odpD.getText());
                 connection.sendMessage(header);
             }
             //answersTable.getItems().add(player.getYourAnswers().get(questionLabel.getText()));
@@ -144,7 +135,7 @@ public class AnswerPanelController implements Runnable {
         while (true) {
             try {
                 String response = connection.read();
-                System.out.println("Przyszła odpowiedź dla gracza");
+                //System.out.println("Przyszła odpowiedź dla gracza");
                 player.handleResponse(response, this);
 
                 Platform.runLater(new Runnable() {

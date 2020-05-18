@@ -112,13 +112,13 @@ void GameOwner::handleEvent(uint32_t events) {
             }else{
                 //wysyłamy listę graczy.
                 std::string players = "";
-                std::cout << "Wchodze do petli \n" ;
+               // std::cout << "Wchodze do petli \n" ;
                 for(const auto &player : Server::getPlayerList()){
                     Player *player1 = player.second;
                     players.append(';'+player1->getNick() + "," + std::to_string(player1->getPoints()) );
                 }
                 players.replace(0,1,"");
-                std::cout<<"Player String:"<< players<< std::endl;
+              //  std::cout<<"Player String:"<< players<< std::endl;
                 players = "players:" + players;
                 char sendPlayers[players.size()+1];
                 strcpy(sendPlayers,players.c_str());
@@ -141,7 +141,6 @@ GameOwner::~GameOwner() {
     if(Game::gameInstance->isStarted1()){
         //gra działa, usuwamy tylko GameOwnera, gra toczy się dalej.
         std::cout << "Wychodzę z trwającej gry" << std::endl;
-
         epoll_ctl(this->epollFd,EPOLL_CTL_DEL,fd, nullptr);
         shutdown(this->fd,SHUT_RDWR);
         close(fd);

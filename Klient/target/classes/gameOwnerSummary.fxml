@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.GameOwnerSummaryController">
+   <children>
+      <ListView fx:id="playerView" layoutX="14.0" layoutY="38.0" prefHeight="125.0" prefWidth="568.0" />
+
+      <Label layoutX="209.0" layoutY="14.0" text="Players Answers and Scores" />
+      <ListView fx:id="qaView" layoutX="13.0" layoutY="195.0" prefHeight="168.0" prefWidth="568.0" />
+      <Label layoutX="221.0" layoutY="170.0" text="Questions and Answers" />
+   </children>
+</AnchorPane>
