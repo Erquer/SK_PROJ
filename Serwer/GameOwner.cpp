@@ -63,6 +63,7 @@ void GameOwner::handleEvent(uint32_t events) {
                     std::cout << "Utworzono Wątek gry" << std::endl;
                     gameThread.detach();
                 }
+                gameMutex.unlock();
             }else if(message.compare("ready") == 0){
                 gameMutex.lock();
                 if(Game::gameInstance->getQuestions().empty()){

@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -114,7 +115,6 @@ public class GameOwner {
                     playerList.add(player1);
 
                 }
-                //TODO: przejście do okna summary, i tam wyświetlanie wyników z rankingiem i wszyskimi odpowiedziami graczy w postaci listy.
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("gameOwnerSummary.fxml"));
                     Parent root = loader.load();
@@ -145,6 +145,22 @@ public class GameOwner {
                     e.printStackTrace();
                 }
 
+            });
+
+        }else if(response.equals("new\n")){
+           //go to main window
+            Platform.runLater(() ->{
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("mainScene.fxml"));
+                AnchorPane root = null;
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                MainSceneContoller controller1 = loader.getController();
+                controller1.setConnection(controller.getConnection());
+                this.controller.setRun_prog(false);
+                this.controller.rootPane.getChildren().setAll(root);
             });
 
         }

@@ -72,14 +72,14 @@ void Client::handleEvent(uint32_t events) {
                 std::cout << "Player wants to join to not existing game" << std::endl;
                 char res[] = "nogame";
                 writeData(this->fd,res);
-                gameMutex.unlock();
+
             }
             else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
                 //gra jest tworzona, wysłanie odp. powiadomienia.
                 std::cout<<"Player wants to join game in creation" << std::endl;
                 char res[] = "creating";
                 writeData(this->fd,res);
-                gameMutex.unlock();
+
 
             }else if(!Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
                 //gra czeka na graczy
@@ -94,7 +94,7 @@ void Client::handleEvent(uint32_t events) {
                         //nick się zgadza
                         std::cout << "New Player Joined the Game" << std::endl;
                         epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, nullptr);
-                        Player *player = new Player(this, niPin.at(0));
+                        auto *player = new Player(this, niPin.at(0));
 
                         //dodajemy nowego gracza do kolejki, a usuwamy klienta, bo nie jest już potrzebny.
                         std::cout << "Dodano Gracza o nicku: " << niPin.at(0) << " Jego FD = " << player->fd
@@ -107,7 +107,7 @@ void Client::handleEvent(uint32_t events) {
                         deleteClient();
                         playerMutex.unlock();
                         std::cout << "Dodano gracza \n";
-                        gameMutex.unlock();
+
 
                     }else{
                         std::cout << "Player sent nick which already exists" << std::endl;
@@ -115,7 +115,7 @@ void Client::handleEvent(uint32_t events) {
                         char res[]= "nick";
                         writeData(this->fd,res);
                         playerMutex.unlock();
-                        gameMutex.unlock();
+
                     }
 
                 }else{
@@ -123,60 +123,58 @@ void Client::handleEvent(uint32_t events) {
                     std::cout<<"Player sent wrong PIN to game" << std::endl;
                     writeData(this->fd,confirmMessage);
                     playerMutex.unlock();
-                    gameMutex.unlock();
+
                 }
 
             }else if(Game::gameInstance->isStarted1()){
                 //gra już trwa.
                 char mess[] = "already running";
                 writeData(this->fd,mess);
-                gameMutex.unlock();
+
             }
 
 
 
-
+            gameMutex.unlock();
         }else if(buffer[1] == 'n'){
-            std::string str(buffer);
-            std::string PIN = str.substr(3,strlen(buffer)-3);
-            gameMutex.lock();
-            if((!Game::gameInstance)){
-                //nikt nie tworzy gry.
-                std::cout<< " Udzielam dostępu" << std::endl;
-                epoll_ctl(epollFd,EPOLL_CTL_DEL,fd, nullptr);
-                GameOwner *gameOwner = new GameOwner(this);
-                Game *game = new Game(gameOwner);
-                game->setID(PIN);
-                //temp komenda do testowania dołączenia nowych graczy.
-               // Game::gameInstance->setOnCreation(false);
-                char message[] = "accepted";
-                gameMutex.unlock();
-                writeData(this->fd,message);
-                deleteClient();
-            }else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
-                //ktoś już tworzy grę
-                std::cout << "Nie udzielam dostepu, bo ktos juz tworzy gre" << std::endl;
-                char message[] = "creating";
-                writeData(this->fd,message);
+                std::string str(buffer);
+                std::string PIN = str.substr(3,strlen(buffer)-3);
+                gameMutex.lock();
+                if((!Game::gameInstance)){
+                    //nikt nie tworzy gry.
+                    std::cout<< " Udzielam dostępu" << std::endl;
+                    epoll_ctl(epollFd,EPOLL_CTL_DEL,fd, nullptr);
+                    GameOwner *gameOwner = new GameOwner(this);
+                    Game *game = new Game(gameOwner);
+                    game->setID(PIN);
+                    //temp komenda do testowania dołączenia nowych graczy.
+                   // Game::gameInstance->setOnCreation(false);
+                    char message[] = "accepted";
+                    writeData(this->fd,message);
+                    deleteClient();
+                }else if(Game::gameInstance && Game::gameInstance->isOnCreation()){
+                    //ktoś już tworzy grę
+                    std::cout << "Nie udzielam dostepu, bo ktos juz tworzy gre" << std::endl;
+                    char message[] = "creating";
+                    writeData(this->fd,message);
 
-                gameMutex.unlock();
 
-            }else if(Game::gameInstance && !Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
-                //gra istenieje i nie jest tworzona i czeka na rozpoczęcie.
-                std::cout << "Gra oczekuje na graczy"<< std::endl;
 
-                gameMutex.unlock();
-            }else{
-                //gra jest stworzona i rozpoczęta.
-                std::cout << "Gra trwa " << std::endl;
-                char mess[] = "already runnning";
-                writeData(this->fd,mess);
-             gameMutex.unlock();
+                }else if(Game::gameInstance && !Game::gameInstance->isOnCreation() && !Game::gameInstance->isStarted1()){
+                    //gra istenieje i nie jest tworzona i czeka na rozpoczęcie.
+                    std::cout << "Gra oczekuje na graczy"<< std::endl;
+
+
+                }else{
+                    //gra jest stworzona i rozpoczęta.
+                    std::cout << "Gra trwa " << std::endl;
+                    char mess[] = "already runnning";
+                    writeData(this->fd,mess);
+
+                }
+            gameMutex.unlock();
             }
 
-        }else{
-            delete this;
-        }
         }
 
 }

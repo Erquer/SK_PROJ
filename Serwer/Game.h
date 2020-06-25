@@ -100,6 +100,8 @@ public:
 
     void sendBestThreeToPlayers();
 
+    void resetGame();
+
 
     std::string createPlayerMessage(Player *player);
 };

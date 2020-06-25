@@ -72,12 +72,9 @@ bool Game::isOnCreation() const {
 void Game::setOnCreation(bool onCreation) {
     Game::onCreation = onCreation;
 }
-void clearPlayers(){
-    Server::getPlayerList().clear();
-}
+
 Game::~Game() {
     gameInstance = nullptr;
-    clearPlayers();
     printf("Game Destrucion; Closing Server. \n");
 }
 
@@ -170,7 +167,14 @@ void Game::runGame() {
     sendBestThreeToPlayers();
     std::cout << "Gra zakonczona " << std::endl;
 
-    delete this;
+    //time for players to see their scores.
+    sleep(10);
+
+    Server::resetServer();
+    std::cout << "Server reseted" << std::endl;
+    this->resetGame();
+
+    std::cout << "Game reseted" << std::endl;
 
 }
 
@@ -288,6 +292,23 @@ std::string Game::createPlayerMessage(Player *player){
     playerString.append("=");
 
     return playerString;
+}
+
+void Game::resetGame() {
+   // gameMutex.lock();
+
+    this->setOwner(nullptr);
+    this->questions.clear();
+    this->playerAnswers.clear();
+    this->onCreation= false;
+    this->isStarted = false;
+    strcpy(this->id,"");
+    this->round = 0;
+    this->name = "";
+    this->gameInstance = nullptr;
+
+  //  gameMutex.unlock();
+
 }
 
 

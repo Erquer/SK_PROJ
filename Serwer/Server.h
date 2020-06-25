@@ -20,7 +20,6 @@ private:
     //Tworzy socet dla serwera
     void crServerSocket(int argc, char **argv);
 
-    void clearPlayerList();
 
 public:
     // ====  Konstruktor i Destruktor ====
@@ -55,6 +54,8 @@ public:
     static std::map<std::string, Player *> getPlayerList();
 
     static void setPlayerList(const std::map<std::string, Player *> &playerList);
+
+    static void resetServer();
 
 };
 

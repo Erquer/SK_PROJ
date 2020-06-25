@@ -40,6 +40,12 @@ public class AnswerPanelController implements Runnable {
     @FXML
     public Label roundLabel;
 
+    public void setRun_prog(boolean run_prog) {
+        this.run_prog = run_prog;
+    }
+
+    private boolean run_prog = true;
+
 
     public Label getNickLabel() {
         return nickLabel;
@@ -132,12 +138,12 @@ public class AnswerPanelController implements Runnable {
     }
     @Override
     public void run() {
-        while (true) {
+        while (run_prog) {
             try {
                 String response = connection.read();
                 //System.out.println("Przyszła odpowiedź dla gracza");
                 player.handleResponse(response, this);
-
+                if(response.equals("new\n")) break;
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -151,8 +157,9 @@ public class AnswerPanelController implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
 
+        }
+        System.out.println("PlayerThread stop working.");
     }
 
     private void setButtons(boolean state){

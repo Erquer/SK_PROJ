@@ -110,7 +110,24 @@ public class Player {
             });
 
 
-        }else {
+        }else if(response.equals("new\n")) {
+            Platform.runLater(() ->{
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("mainScene.fxml"));
+                Parent root = null;
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                MainSceneContoller controller1 = loader.getController();
+                controller1.setConnection(controller.getConnection());
+                controller.setRun_prog(false);
+                controller.rootPane.getChildren().setAll(root);
+
+
+            });
+
+        }else{
             System.out.println(response);
         }
     }

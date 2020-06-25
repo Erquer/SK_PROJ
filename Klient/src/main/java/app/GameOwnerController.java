@@ -45,6 +45,12 @@ public class GameOwnerController implements Runnable {
     @FXML
     public AnchorPane rootPane;
 
+    public void setRun_prog(boolean run_prog) {
+        this.run_prog = run_prog;
+    }
+
+    private boolean run_prog = true;
+
     private ObservableList<Question> questions = FXCollections.observableArrayList();
     private ObservableList<Player> players = FXCollections.observableArrayList();
 
@@ -170,10 +176,11 @@ public class GameOwnerController implements Runnable {
     public void run() {
 
         try {
-            while (true){
+            while (run_prog){
                 String response = connection.read();
                // System.out.println("Przyszła odpowiedź");
                 gameOwner.handleResponse(response);
+                if(response.equals("new\n")) break;
 
             }
         }catch (IOException e){
@@ -188,7 +195,7 @@ public class GameOwnerController implements Runnable {
             });
 
         }
-
+        System.out.println("GameOwner Thread stop working.");
     }
 
 //    public ObservableList<Player> getPlayers() {

@@ -142,3 +142,36 @@ bool Server::deleteClientFromServer(Client *client) {
 
     return false;
 }
+
+
+
+void Server::resetServer() {
+    playerMutex.lock();
+    for(auto const& p: Server::getPlayerList()){
+        epoll_ctl(epollFd, EPOLL_CTL_DEL, p.second->fd, nullptr);
+        auto *client = new Client(p.second->fd);
+        Server::addClient(client);
+        std::cout << "Usuwam gracza o nicku: " << p.first << std::endl;
+        Server::deletePlayer(p.first);
+        char mess[] = "new";
+        writeData(p.second->fd, mess);
+    }
+    playerMutex.unlock();
+    //if there is still game owner, make his normal client.
+    if(Game::gameInstance->isGameOwnerSet()){
+        int fd = Game::gameInstance->getOwner()->fd;
+        epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, nullptr);
+        auto *client = new Client(fd);
+        Server::addClient(client);
+        std::cout << "Usuwam gameownera o fd: " << fd << std::endl;
+        free(Game::gameInstance->getOwner());
+        char mess[] = "new";
+        writeData(fd, mess);
+
+    }
+    //pętla sprawdzająca, czy klienci są dobrze dodani.
+    for(auto const a: Server::clientsConnected){
+        std::cout << "Client fd: " << a->fd << std::endl;
+    }
+
+}
